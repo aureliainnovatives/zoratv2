@@ -1,0 +1,183 @@
+# Base URL
+@baseUrl = http://localhost:3000/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjE5NzEzYWZkNjZiZmIyYmEwYzRjMyIsInJvbGUiOnsiX2lkIjoiNjc2MThlMzA1MGJkMmYyY2IzZGQ4MDdhIiwibmFtZSI6IlVzZXIiLCJkZXNjcmlwdGlvbiI6IkJhc2ljIGFjY2VzcyB0byBzeXN0ZW0iLCJwZXJtaXNzaW9ucyI6W3sicGVybWlzc2lvbklkIjoiNjc2MThlMzA1MGJkMmYyY2IzZGQ4MDZhIiwibW9kdWxlSWQiOiI2NzYxOGUzMDUwYmQyZjJjYjNkZDgwNmUiLCJfaWQiOiI2NzYxOGUzMDUwYmQyZjJjYjNkZDgwN2IifV0sIl9fdiI6MCwiY3JlYXRlZEF0IjoiMjAyNC0xMi0xN1QxNDo0NDowMC40NjZaIiwidXBkYXRlZEF0IjoiMjAyNC0xMi0xN1QxNDo0NDowMC40NjZaIn0sImlhdCI6MTczNDQ0OTAzMiwiZXhwIjoxNzM0NDUyNjMyfQ.8thr_6KuxgJwc4xRDAkb7PdvyXS_wu-HdSnLMXVwYXY
+
+---
+
+# 1. Test Role Services
+
+# Create a Role (Requires JWT)
+POST {{baseUrl}}/roles
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Admin",
+  "description": "Administrator role with all permissions"
+}
+
+### Get All Roles (Requires JWT)
+GET {{baseUrl}}/roles
+Authorization: Bearer {{token}}
+
+### Get Role By ID (Requires JWT)
+GET {{baseUrl}}/roles/67618e3050bd2f2cb3dd8072
+Authorization: Bearer {{token}}
+
+### Update a Role (Requires JWT)
+PUT {{baseUrl}}/roles/6761875124687ae98ad3ff38
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Super Admin",
+  "description": "Updated role description"
+}
+
+### Delete a Role (Requires JWT)
+DELETE {{baseUrl}}/roles/6761875124687ae98ad3ff38
+Authorization: Bearer {{token}}
+
+---
+
+# 2. Test Permission Services
+
+### Create a Permission (Requires JWT)
+POST {{baseUrl}}/permissions
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "read",
+  "description": "Permission to read resources"
+}
+
+### Get All Permissions (Requires JWT)
+GET {{baseUrl}}/permissions
+Authorization: Bearer {{token}}
+
+### Get Permission By ID (Requires JWT)
+GET {{baseUrl}}/permissions/6761887e710bc6bafc0f5de8
+Authorization: Bearer {{token}}
+
+### Update a Permission (Requires JWT)
+PUT {{baseUrl}}/permissions/6761887e710bc6bafc0f5de8
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "write",
+  "description": "Permission to write resources"
+}
+
+### Delete a Permission (Requires JWT)
+DELETE {{baseUrl}}/permissions/6761887e710bc6bafc0f5de8
+Authorization: Bearer {{token}}
+
+---
+
+# 3. Test Module Services
+
+### Create a Module (Requires JWT)
+POST {{baseUrl}}/modules
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Users",
+  "description": "Module to manage users"
+}
+
+### Get All Modules (Requires JWT)
+GET {{baseUrl}}/modules
+Authorization: Bearer {{token}}
+
+### Get Module By ID (Requires JWT)
+GET {{baseUrl}}/modules/67618892710bc6bafc0f5ded
+Authorization: Bearer {{token}}
+
+### Update a Module (Requires JWT)
+PUT {{baseUrl}}/modules/67618892710bc6bafc0f5ded
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Roles",
+  "description": "Updated module description"
+}
+
+### Delete a Module (Requires JWT)
+DELETE {{baseUrl}}/modules/67618892710bc6bafc0f5ded
+Authorization: Bearer {{token}}
+
+---
+
+# 4. Test User Services
+
+### Create a User (Requires JWT)
+POST {{baseUrl}}/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "password": "password123",
+  "role": "67618878710bc6bafc0f5de6"
+}
+
+### Get All Users (Requires JWT)
+GET {{baseUrl}}/users
+Authorization: Bearer {{token}}
+
+### Get User By ID (Requires JWT)
+GET {{baseUrl}}/users/67618e3050bd2f2cb3dd807d
+Authorization: Bearer {{token}}
+
+### Update a User (Requires JWT)
+PUT {{baseUrl}}/users/67618e3050bd2f2cb3dd807d
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "John Doe Updated",
+  "email": "john.updated@example.com"
+}
+
+### Delete a User (Requires JWT)
+DELETE {{baseUrl}}/users/676188bf710bc6bafc0f5df4
+Authorization: Bearer {{token}}
+
+---
+
+# 5. Test Authentication Services
+
+### Signup a New User
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test.user@example.com",
+  "password": "password123"
+}
+
+### Login to Get JWT Token
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "superadmin@example.com",
+  "password": "superadmin123"
+}
+
+---
+
+# 6. Test RBAC: Restricted Access
+
+### Test Unauthorized Access (No JWT Token)
+GET {{baseUrl}}/roles
+
+### Test Unauthorized Route (Invalid Token)
+GET {{baseUrl}}/roles
+Authorization: Bearer invalid-token
