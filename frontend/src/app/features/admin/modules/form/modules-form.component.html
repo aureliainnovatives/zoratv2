@@ -1,0 +1,64 @@
+<div class="p-6">
+  <!-- Header section -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-semibold text-gray-200">
+      {{ moduleId ? (languageService.translate('modules.form.title.edit')) : (languageService.translate('modules.form.title.add')) }}
+    </h1>
+  </div>
+
+  <!-- Form Container with black background -->
+  <div class="bg-[#1a1a1a] border border-dark-border rounded-lg p-6">
+    <!-- Form -->
+    <form [formGroup]="moduleForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Name Field -->
+      <div class="flex flex-col gap-2">
+        <label for="name" class="text-sm font-medium text-gray-300">
+          {{ languageService.translate('modules.form.fields.name') }}
+        </label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          [placeholder]="languageService.translate('modules.form.fields.name')"
+          class="w-full px-4 py-2 bg-[#2d2d2d] border border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-200"
+        >
+        <div *ngIf="moduleForm.get('name')?.invalid && moduleForm.get('name')?.touched" class="text-sm text-red-500">
+          {{ languageService.translate('common.validation.required') }}
+        </div>
+      </div>
+
+      <!-- Description Field -->
+      <div class="flex flex-col gap-2">
+        <label for="description" class="text-sm font-medium text-gray-300">
+          {{ languageService.translate('modules.form.fields.description') }}
+        </label>
+        <textarea
+          id="description"
+          formControlName="description"
+          [placeholder]="languageService.translate('modules.form.fields.description')"
+          rows="4"
+          class="w-full px-4 py-2 bg-[#2d2d2d] border border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-200 resize-none"
+        ></textarea>
+        <div *ngIf="moduleForm.get('description')?.invalid && moduleForm.get('description')?.touched" class="text-sm text-red-500">
+          {{ languageService.translate('common.validation.required') }}
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end gap-4 pt-4">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="px-4 py-2 text-sm text-gray-400 hover:text-gray-200 transition-colors">
+          {{ languageService.translate('common.actions.cancel') }}
+        </button>
+        <button
+          type="submit"
+          [disabled]="moduleForm.invalid || isSubmitting"
+          class="btn-primary px-4 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ languageService.translate('common.actions.save') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

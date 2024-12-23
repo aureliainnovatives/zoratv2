@@ -48,14 +48,10 @@ export class ModulesService {
   }
 
   updateModule(id: string, module: Partial<Module>): Observable<Module> {
-    return this.http.put<Module>(`${this.apiUrl}/${id}`, module, {
-      headers: this.getHeaders()
-    });
+    return this.http.put<Module>(`${environment.apiUrl}/modules/${id}`, module, { headers: this.getHeaders() });
   }
 
   deleteModule(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
-      headers: this.getHeaders()
-    });
+    return this.http.delete<void>(`${environment.apiUrl}/modules/${id}`, { headers: this.getHeaders() });
   }
 } 

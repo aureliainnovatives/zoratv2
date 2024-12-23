@@ -82,38 +82,12 @@ export class AuthService {
   }
 
   getCurrentUser(): User | null {
-    const token = this.getToken();
-    if (!token) return null;
-
     try {
-      const userStr = localStorage.getItem('current_user');
-      if (!userStr) {
-        // If no user data but we have a valid token, try to decode user from token
-        const decodedToken = this.jwtHelper.decodeToken(token);
-        if (decodedToken && this.isValidDecodedToken(decodedToken)) {
-          const user: User = {
-            id: decodedToken.id,
-            name: decodedToken.name,
-            email: decodedToken.email,
-            role: decodedToken.role
-          };
-          // Store user data for future use
-          localStorage.setItem('current_user', JSON.stringify(user));
-          return user;
-        }
-        return null;
-      }
-
-      const user = JSON.parse(userStr);
-      if (!this.isValidUser(user)) {
-        // If user data is invalid but token is valid, just clear user data
-        localStorage.removeItem('current_user');
-        return null;
-      }
-      return user;
+      const userStr = localStorage.getItem('user');
+      if (!userStr) return null;
+      return JSON.parse(userStr);
     } catch (error) {
       console.error('Error getting current user:', error);
-      // Don't logout on parse error, just return null
       return null;
     }
   }
@@ -139,7 +113,7 @@ export class AuthService {
 
   private silentLogout(): void {
     localStorage.removeItem(environment.auth.tokenKey);
-    localStorage.removeItem('current_user');
+    localStorage.removeItem('user');
     if (this.currentUserSubject) {
       this.currentUserSubject.next(null);
     }
@@ -156,7 +130,7 @@ export class AuthService {
         tap(response => {
           if (response.token) {
             localStorage.setItem(environment.auth.tokenKey, response.token);
-            localStorage.setItem('current_user', JSON.stringify(response.user));
+            localStorage.setItem('user', JSON.stringify(response.user));
             this.currentUserSubject.next(response.user);
           }
         })
@@ -169,7 +143,7 @@ export class AuthService {
         tap(response => {
           if (response.token) {
             localStorage.setItem(environment.auth.tokenKey, response.token);
-            localStorage.setItem('current_user', JSON.stringify(response.user));
+            localStorage.setItem('user', JSON.stringify(response.user));
             this.currentUserSubject.next(response.user);
           }
         })

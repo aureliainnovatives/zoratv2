@@ -5,6 +5,7 @@ import { MainLayoutComponent } from './layouts/main-layout/main-layout.component
 import { authGuard } from './core/guards/auth.guard';
 import { HomeComponent } from './features/home/home.component';
 import { ModulesComponent } from './features/admin/modules/modules.component';
+import { ModulesFormComponent } from './features/admin/modules/form/modules-form.component';
 import { RolesComponent } from './features/admin/roles/roles.component';
 import { PermissionsComponent } from './features/admin/permissions/permissions.component';
 import { UsersComponent } from './features/admin/users/users.component';
@@ -23,7 +24,14 @@ export const routes: Routes = [
         path: 'admin',
         children: [
           { path: '', redirectTo: 'modules', pathMatch: 'full' },
-          { path: 'modules', component: ModulesComponent },
+          { 
+            path: 'modules',
+            children: [
+              { path: '', component: ModulesComponent },
+              { path: 'add', component: ModulesFormComponent },
+              { path: 'edit/:id', component: ModulesFormComponent }
+            ]
+          },
           { path: 'roles', component: RolesComponent },
           { path: 'permissions', component: PermissionsComponent },
           { path: 'users', component: UsersComponent }

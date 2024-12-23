@@ -46,6 +46,9 @@
       "showing": "Showing",
       "to": "to",
       "total": "total"
+    },
+    "messages": {
+      "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
     }
   },
   "auth": {
@@ -153,7 +156,13 @@
       "createSuccess": "Module created successfully",
       "updateSuccess": "Module updated successfully",
       "deleteSuccess": "Module deleted successfully",
-      "deleteConfirm": "Are you sure you want to delete this module?"
+      "deleteConfirm": "Are you sure you want to delete this module?",
+      "loadError": "Failed to load module",
+      "saveError": "Failed to save module"
+    },
+    "delete": {
+      "title": "Delete Module",
+      "message": "Are you sure you want to delete module '{{name}}'? This action cannot be undone."
     }
   },
   "roles": {

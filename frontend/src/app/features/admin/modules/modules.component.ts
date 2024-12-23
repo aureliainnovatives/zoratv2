@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ModulesService, Module } from '../services/modules.service';
 import { environment } from 'src/environments/environment';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { LanguageService } from '../../../core/services/language.service';
+import { NotificationService } from '../../../core/services/notification.service';
 
 interface SortConfig {
-  column: keyof Module | 'no';
+  column: string;
   direction: 'asc' | 'desc';
 }
 
@@ -13,7 +18,7 @@ interface SortConfig {
   selector: 'app-modules',
   templateUrl: './modules.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, RouterModule, MatDialogModule]
 })
 export class ModulesComponent implements OnInit {
   modules: Module[] = [];
@@ -29,7 +34,14 @@ export class ModulesComponent implements OnInit {
   loading: boolean = false;
   originalModules: Module[] = [];
 
-  constructor(private modulesService: ModulesService) {}
+  constructor(
+    private modulesService: ModulesService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private dialog: MatDialog,
+    private languageService: LanguageService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.loadModules();
@@ -87,7 +99,7 @@ export class ModulesComponent implements OnInit {
     }
   }
 
-  sort(column: keyof Module | 'no'): void {
+  sort(column: string): void {
     this.sortConfig = {
       column,
       direction: this.sortConfig.column === column && this.sortConfig.direction === 'asc' ? 'desc' : 'asc'
@@ -154,10 +166,35 @@ export class ModulesComponent implements OnInit {
   }
 
   editModule(module: Module): void {
-    // Implement edit module
+    this.router.navigate(['edit', module['_id']], { relativeTo: this.route });
   }
 
   deleteModule(module: Module): void {
-    // Implement delete module
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: this.languageService.translate('modules.delete.title'),
+        message: this.languageService.translate('modules.delete.message', { name: module.name }),
+        confirmText: this.languageService.translate('common.actions.delete'),
+        cancelText: this.languageService.translate('common.actions.cancel')
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
+      if (confirmed) {
+        try {
+          await this.modulesService.deleteModule(module['_id']).toPromise();
+          this.notificationService.success(
+            this.languageService.translate('modules.messages.deleteSuccess')
+          );
+          this.loadModules(); // Refresh the list
+        } catch (error) {
+          console.error('Error deleting module:', error);
+          this.notificationService.error(
+            this.languageService.translate('common.status.error')
+          );
+        }
+      }
+    });
   }
 } 
