@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Router } from '@angular/router';
 
 export interface User {
-  _id: string;
+  id: string;
   name: string;
   email: string;
   role: {
@@ -20,9 +20,8 @@ export interface User {
   };
 }
 
-export interface AuthResponse {
+export interface LoginResponse {
   token: string;
-  refreshToken: string;
   user: User;
 }
 
@@ -32,72 +31,153 @@ export interface AuthResponse {
 export class AuthService {
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser$: Observable<User | null>;
-  private jwtHelper: JwtHelperService = new JwtHelperService();
-  private refreshTokenTimeout?: any;
+  private jwtHelper = new JwtHelperService();
+  private initialized = false;
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) {
-    this.currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromToken());
+    this.currentUserSubject = new BehaviorSubject<User | null>(null);
     this.currentUser$ = this.currentUserSubject.asObservable();
-    this.startRefreshTokenTimer();
+    this.initializeUser();
+  }
+
+  private initializeUser(): void {
+    if (this.initialized) return;
+    
+    try {
+      const user = this.getCurrentUser();
+      if (user) {
+        this.currentUserSubject.next(user);
+      }
+    } catch (error) {
+      console.error('Error initializing user:', error);
+      // Don't logout here, just log the error
+    }
+    
+    this.initialized = true;
   }
 
   public get currentUserValue(): User | null {
     return this.currentUserSubject.value;
   }
 
-  login(credentials: { email: string; password: string }): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials)
-      .pipe(
-        tap(response => this.handleAuthentication(response)),
-        catchError(error => {
-          console.error('Login error:', error);
-          return throwError(() => error);
-        })
-      );
+  getToken(): string | null {
+    const token = localStorage.getItem(environment.auth.tokenKey);
+    if (!token) return null;
+    
+    try {
+      // Only check expiration if we can decode the token
+      if (this.jwtHelper.isTokenExpired(token)) {
+        this.silentLogout();
+        return null;
+      }
+      return token;
+    } catch (error) {
+      console.error('Error checking token expiration:', error);
+      // Don't remove token if we just can't decode it
+      return token;
+    }
   }
 
-  signup(userData: { name: string; email: string; password: string }): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/signup`, userData)
-      .pipe(
-        tap(response => this.handleAuthentication(response)),
-        catchError(error => {
-          console.error('Signup error:', error);
-          return throwError(() => error);
-        })
-      );
+  getCurrentUser(): User | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const userStr = localStorage.getItem('current_user');
+      if (!userStr) {
+        // If no user data but we have a valid token, try to decode user from token
+        const decodedToken = this.jwtHelper.decodeToken(token);
+        if (decodedToken && this.isValidDecodedToken(decodedToken)) {
+          const user: User = {
+            id: decodedToken.id,
+            name: decodedToken.name,
+            email: decodedToken.email,
+            role: decodedToken.role
+          };
+          // Store user data for future use
+          localStorage.setItem('current_user', JSON.stringify(user));
+          return user;
+        }
+        return null;
+      }
+
+      const user = JSON.parse(userStr);
+      if (!this.isValidUser(user)) {
+        // If user data is invalid but token is valid, just clear user data
+        localStorage.removeItem('current_user');
+        return null;
+      }
+      return user;
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      // Don't logout on parse error, just return null
+      return null;
+    }
+  }
+
+  private isValidDecodedToken(decodedToken: any): boolean {
+    return decodedToken 
+      && typeof decodedToken.id === 'string'
+      && typeof decodedToken.name === 'string'
+      && typeof decodedToken.email === 'string'
+      && decodedToken.role;
+  }
+
+  private isValidUser(user: any): user is User {
+    return user 
+      && typeof user.id === 'string'
+      && typeof user.name === 'string'
+      && typeof user.email === 'string'
+      && user.role
+      && typeof user.role._id === 'string'
+      && typeof user.role.name === 'string'
+      && Array.isArray(user.role.permissions);
+  }
+
+  private silentLogout(): void {
+    localStorage.removeItem(environment.auth.tokenKey);
+    localStorage.removeItem('current_user');
+    if (this.currentUserSubject) {
+      this.currentUserSubject.next(null);
+    }
   }
 
   logout(): void {
-    localStorage.removeItem(environment.auth.tokenKey);
-    localStorage.removeItem(environment.auth.refreshTokenKey);
-    localStorage.removeItem(environment.auth.tokenExpiryKey);
-    this.stopRefreshTokenTimer();
-    this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    this.silentLogout();
+    this.router.navigate(['/auth/login']);
   }
 
-  refreshToken(): Observable<AuthResponse> {
-    const refreshToken = localStorage.getItem(environment.auth.refreshTokenKey);
-    if (!refreshToken) {
-      return throwError(() => new Error('No refresh token available'));
-    }
-
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/refresh-token`, { refreshToken })
+  login(credentials: { email: string; password: string }): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, credentials)
       .pipe(
-        tap(response => this.handleAuthentication(response)),
-        catchError(error => {
-          console.error('Token refresh error:', error);
-          this.logout();
-          return throwError(() => error);
+        tap(response => {
+          if (response.token) {
+            localStorage.setItem(environment.auth.tokenKey, response.token);
+            localStorage.setItem('current_user', JSON.stringify(response.user));
+            this.currentUserSubject.next(response.user);
+          }
+        })
+      );
+  }
+
+  signup(userData: { name: string; email: string; password: string }): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/signup`, userData)
+      .pipe(
+        tap(response => {
+          if (response.token) {
+            localStorage.setItem(environment.auth.tokenKey, response.token);
+            localStorage.setItem('current_user', JSON.stringify(response.user));
+            this.currentUserSubject.next(response.user);
+          }
         })
       );
   }
 
   isAuthenticated(): boolean {
-    const token = localStorage.getItem(environment.auth.tokenKey);
+    const token = this.getToken();
     return !!token && !this.jwtHelper.isTokenExpired(token);
   }
 
@@ -137,59 +217,5 @@ export class AuthService {
 
   loginWithX(): void {
     window.location.href = `${environment.apiUrl}/auth/x`;
-  }
-
-  // Private helper methods
-  private handleAuthentication(response: AuthResponse): void {
-    localStorage.setItem(environment.auth.tokenKey, response.token);
-    localStorage.setItem(environment.auth.refreshTokenKey, response.refreshToken);
-    
-    const tokenExpiry = this.jwtHelper.getTokenExpirationDate(response.token);
-    if (tokenExpiry) {
-      localStorage.setItem(environment.auth.tokenExpiryKey, tokenExpiry.toISOString());
-    }
-
-    this.currentUserSubject.next(response.user);
-    this.startRefreshTokenTimer();
-  }
-
-  private getUserFromToken(): User | null {
-    try {
-      const token = localStorage.getItem(environment.auth.tokenKey);
-      if (!token) {
-        return null;
-      }
-
-      const decodedToken = this.jwtHelper.decodeToken(token);
-      if (!decodedToken) {
-        return null;
-      }
-
-      return decodedToken.user;
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      return null;
-    }
-  }
-
-  private startRefreshTokenTimer(): void {
-    const token = localStorage.getItem(environment.auth.tokenKey);
-    if (!token) {
-      return;
-    }
-
-    const expires = this.jwtHelper.getTokenExpirationDate(token);
-    if (!expires) {
-      return;
-    }
-
-    const timeout = expires.getTime() - Date.now() - (60 * 1000); // Refresh 1 minute before expiry
-    this.refreshTokenTimeout = setTimeout(() => this.refreshToken().subscribe(), timeout);
-  }
-
-  private stopRefreshTokenTimer(): void {
-    if (this.refreshTokenTimeout) {
-      clearTimeout(this.refreshTokenTimeout);
-    }
   }
 } 

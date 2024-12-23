@@ -65,3 +65,19 @@ html:not(.dark) body.dark {
     @apply transition-colors duration-200 ease-in-out hover:text-menu-icon-hover;
   }
 }
+
+/* Progress bar animation */
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animate-progress-indeterminate {
+  animation: progress-indeterminate 1.5s infinite linear;
+  @apply bg-gradient-to-r from-transparent via-primary to-transparent;
+  width: 50%;
+}

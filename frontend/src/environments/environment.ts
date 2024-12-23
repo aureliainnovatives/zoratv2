@@ -117,5 +117,9 @@ export const environment = {
     enableDarkMode: true,
     enableLanguageSelection: true,
     enableNotifications: true
+  },
+  table: {
+    defaultItemsPerPage: 5,
+    itemsPerPageOptions: [5, 10, 25, 50]
   }
 }; 
