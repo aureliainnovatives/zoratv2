@@ -1,0 +1,325 @@
+{
+  "common": {
+    "actions": {
+      "add": "Add",
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save",
+      "cancel": "Cancel",
+      "close": "Close",
+      "back": "Back",
+      "next": "Next",
+      "submit": "Submit",
+      "search": "Search",
+      "filter": "Filter",
+      "clear": "Clear",
+      "refresh": "Refresh",
+      "view": "View",
+      "download": "Download",
+      "upload": "Upload",
+      "import": "Import",
+      "export": "Export"
+    },
+    "status": {
+      "loading": "Loading...",
+      "success": "Success",
+      "error": "Error",
+      "warning": "Warning",
+      "info": "Information",
+      "noData": "No data available",
+      "noResults": "No results found",
+      "processing": "Processing..."
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email address",
+      "minLength": "Must be at least {{value}} characters",
+      "maxLength": "Must be no more than {{value}} characters",
+      "passwordMismatch": "Passwords do not match",
+      "invalidFormat": "Invalid format",
+      "numberOnly": "Please enter numbers only",
+      "invalidDate": "Invalid date"
+    },
+    "pagination": {
+      "itemsPerPage": "Items per page",
+      "of": "of",
+      "showing": "Showing",
+      "to": "to",
+      "total": "total"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to your account",
+      "email": "Email address",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot your password?",
+      "signIn": "Sign in",
+      "signingIn": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create one",
+      "socialLogin": {
+        "continueWith": "Or continue with",
+        "google": "Continue with Google",
+        "facebook": "Continue with Facebook",
+        "github": "Continue with GitHub",
+        "linkedin": "Continue with LinkedIn",
+        "x": "Continue with X"
+      }
+    },
+    "signup": {
+      "title": "Create your account",
+      "name": "Full name",
+      "email": "Email address",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "createAccount": "Create account",
+      "creatingAccount": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "socialSignup": {
+        "continueWith": "Or continue with",
+        "google": "Continue with Google",
+        "facebook": "Continue with Facebook",
+        "github": "Continue with GitHub",
+        "linkedin": "Continue with LinkedIn",
+        "x": "Continue with X"
+      }
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "email": "Email address",
+      "submit": "Send reset link",
+      "sending": "Sending...",
+      "backToLogin": "Back to login",
+      "success": "If an account exists with this email, you will receive a password reset link"
+    }
+  },
+  "layout": {
+    "header": {
+      "welcome": "Welcome",
+      "notifications": "Notifications",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout",
+      "theme": {
+        "toggle": "Toggle theme",
+        "light": "Light",
+        "dark": "Dark"
+      }
+    },
+    "sidebar": {
+      "menu": {
+        "admin": {
+          "title": "Admin",
+          "modules": "Modules",
+          "roles": "Roles",
+          "permissions": "Permissions",
+          "users": "Users"
+        },
+        "home": "Home",
+        "workflows": "Workflows",
+        "agents": "Agents"
+      },
+      "collapse": "Collapse sidebar",
+      "expand": "Expand sidebar"
+    }
+  },
+  "modules": {
+    "title": "Modules",
+    "list": {
+      "title": "Module List",
+      "addNew": "Add New Module",
+      "columns": {
+        "name": "Name",
+        "description": "Description",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "actions": "Actions"
+      }
+    },
+    "form": {
+      "title": {
+        "add": "Add Module",
+        "edit": "Edit Module"
+      },
+      "fields": {
+        "name": "Module Name",
+        "description": "Description"
+      }
+    },
+    "messages": {
+      "createSuccess": "Module created successfully",
+      "updateSuccess": "Module updated successfully",
+      "deleteSuccess": "Module deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this module?"
+    }
+  },
+  "roles": {
+    "title": "Roles",
+    "list": {
+      "title": "Role List",
+      "addNew": "Add New Role",
+      "columns": {
+        "name": "Name",
+        "description": "Description",
+        "permissions": "Permissions",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "actions": "Actions"
+      }
+    },
+    "form": {
+      "title": {
+        "add": "Add Role",
+        "edit": "Edit Role"
+      },
+      "fields": {
+        "name": "Role Name",
+        "description": "Description",
+        "permissions": "Permissions"
+      }
+    },
+    "messages": {
+      "createSuccess": "Role created successfully",
+      "updateSuccess": "Role updated successfully",
+      "deleteSuccess": "Role deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this role?"
+    }
+  },
+  "permissions": {
+    "title": "Permissions",
+    "list": {
+      "title": "Permission List",
+      "addNew": "Add New Permission",
+      "columns": {
+        "name": "Name",
+        "description": "Description",
+        "module": "Module",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "actions": "Actions"
+      }
+    },
+    "form": {
+      "title": {
+        "add": "Add Permission",
+        "edit": "Edit Permission"
+      },
+      "fields": {
+        "name": "Permission Name",
+        "description": "Description",
+        "module": "Module"
+      }
+    },
+    "messages": {
+      "createSuccess": "Permission created successfully",
+      "updateSuccess": "Permission updated successfully",
+      "deleteSuccess": "Permission deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this permission?"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "list": {
+      "title": "User List",
+      "addNew": "Add New User",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "actions": "Actions"
+      }
+    },
+    "form": {
+      "title": {
+        "add": "Add User",
+        "edit": "Edit User"
+      },
+      "fields": {
+        "name": "Full Name",
+        "email": "Email Address",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "role": "Role",
+        "status": "Status"
+      }
+    },
+    "messages": {
+      "createSuccess": "User created successfully",
+      "updateSuccess": "User updated successfully",
+      "deleteSuccess": "User deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this user?"
+    }
+  },
+  "workflows": {
+    "title": "Workflows",
+    "list": {
+      "title": "Workflow List",
+      "addNew": "Add New Workflow",
+      "columns": {
+        "name": "Name",
+        "description": "Description",
+        "status": "Status",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "actions": "Actions"
+      }
+    },
+    "form": {
+      "title": {
+        "add": "Add Workflow",
+        "edit": "Edit Workflow"
+      },
+      "fields": {
+        "name": "Workflow Name",
+        "description": "Description",
+        "status": "Status"
+      }
+    },
+    "messages": {
+      "createSuccess": "Workflow created successfully",
+      "updateSuccess": "Workflow updated successfully",
+      "deleteSuccess": "Workflow deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this workflow?"
+    }
+  },
+  "agents": {
+    "title": "Agents",
+    "list": {
+      "title": "Agent List",
+      "addNew": "Add New Agent",
+      "columns": {
+        "name": "Name",
+        "description": "Description",
+        "type": "Type",
+        "status": "Status",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "actions": "Actions"
+      }
+    },
+    "form": {
+      "title": {
+        "add": "Add Agent",
+        "edit": "Edit Agent"
+      },
+      "fields": {
+        "name": "Agent Name",
+        "description": "Description",
+        "type": "Agent Type",
+        "status": "Status"
+      }
+    },
+    "messages": {
+      "createSuccess": "Agent created successfully",
+      "updateSuccess": "Agent updated successfully",
+      "deleteSuccess": "Agent deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this agent?"
+    }
+  }
+} 

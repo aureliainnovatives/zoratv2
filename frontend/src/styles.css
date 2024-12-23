@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ensure dark mode is applied immediately */
+:root {
+  color-scheme: light dark;
+}
+
+html.dark {
+  background-color: #202123;
+  color: #c5c5d2;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Prevent flash of wrong theme */
+html.dark body:not(.dark) {
+  display: none;
+}
+
+html:not(.dark) body.dark {
+  display: none;
+}
+
+/* Custom styles */
+@layer base {
+  body {
+    @apply bg-white dark:bg-dark-bg text-gray-800 dark:text-dark-text;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg transition-colors;
+  }
+  
+  .panel {
+    @apply bg-white dark:bg-dark-panel border border-gray-200 dark:border-dark-border rounded-lg shadow-sm;
+  }
+
+  /* Menu item hover effects */
+  .menu-item {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  .menu-item:hover {
+    @apply bg-menu-bg-hover;
+  }
+
+  .menu-item.active {
+    @apply bg-menu-bg-active;
+  }
+
+  /* Sidebar transition */
+  .sidebar-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  /* Icon hover effect */
+  .icon-hover {
+    @apply transition-colors duration-200 ease-in-out hover:text-menu-icon-hover;
+  }
+}

@@ -1,0 +1,122 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-bg py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8 panel p-8">
+    <div class="text-center">
+      <h2 class="text-3xl font-bold text-gray-900 dark:text-dark-heading">
+        Create Account
+      </h2>
+    </div>
+
+    <!-- Social Login Buttons -->
+    <div class="space-y-4">
+      <button 
+        (click)="authService.loginWithX()"
+        class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-dark-border rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-dark-text bg-white dark:bg-dark-panel hover:bg-gray-50 dark:hover:bg-opacity-90 transition-colors">
+        <svg class="w-6 h-6 mr-3" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        Continue with X
+      </button>
+
+      <button 
+        (click)="authService.loginWithGithub()"
+        class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-dark-border rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-dark-text bg-white dark:bg-dark-panel hover:bg-gray-50 dark:hover:bg-opacity-90 transition-colors">
+        <svg class="w-6 h-6 mr-3" viewBox="0 0 24 24" fill="#6e7681">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        Continue with GitHub
+      </button>
+
+      <button 
+        (click)="authService.loginWithFacebook()"
+        class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-dark-border rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-dark-text bg-white dark:bg-dark-panel hover:bg-gray-50 dark:hover:bg-opacity-90 transition-colors">
+        <svg class="w-6 h-6 mr-3" viewBox="0 0 24 24" fill="#1877F2">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+        Continue with Facebook
+      </button>
+
+      <button 
+        (click)="authService.loginWithLinkedIn()"
+        class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-dark-border rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-dark-text bg-white dark:bg-dark-panel hover:bg-gray-50 dark:hover:bg-opacity-90 transition-colors">
+        <svg class="w-6 h-6 mr-3" viewBox="0 0 24 24" fill="#0A66C2">
+          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+        </svg>
+        Continue with LinkedIn
+      </button>
+    </div>
+
+    <div class="relative">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-gray-300 dark:border-dark-border"></div>
+      </div>
+      <div class="relative flex justify-center text-sm">
+        <span class="px-2 bg-white dark:bg-dark-panel text-gray-500 dark:text-dark-text">
+          Or continue with email
+        </span>
+      </div>
+    </div>
+
+    <!-- Email Form -->
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
+      <div class="space-y-4">
+        <div>
+          <label for="name" class="sr-only">Full name</label>
+          <input 
+            id="name" 
+            type="text" 
+            formControlName="name"
+            required 
+            [class.border-red-500]="signupForm.get('name')?.invalid && signupForm.get('name')?.touched"
+            class="appearance-none relative block w-full px-3 py-3 border dark:border-dark-border dark:bg-[#2d2d2d] dark:text-dark-text border-gray-300 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm" 
+            placeholder="Full name">
+        </div>
+        <div>
+          <label for="email" class="sr-only">Email address</label>
+          <input 
+            id="email" 
+            type="email" 
+            formControlName="email"
+            required 
+            [class.border-red-500]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
+            class="appearance-none relative block w-full px-3 py-3 border dark:border-dark-border dark:bg-[#2d2d2d] dark:text-dark-text border-gray-300 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm" 
+            placeholder="Email address">
+        </div>
+        <div>
+          <label for="password" class="sr-only">Password</label>
+          <input 
+            id="password" 
+            type="password" 
+            formControlName="password"
+            required 
+            [class.border-red-500]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+            class="appearance-none relative block w-full px-3 py-3 border dark:border-dark-border dark:bg-[#2d2d2d] dark:text-dark-text border-gray-300 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm" 
+            placeholder="Password">
+        </div>
+      </div>
+
+      <div>
+        <button 
+          type="submit" 
+          [disabled]="signupForm.invalid || isLoading"
+          class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed">
+          <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+            <svg *ngIf="isLoading" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+          {{ isLoading ? 'Creating account...' : 'Create account' }}
+        </button>
+      </div>
+    </form>
+
+    <div class="text-center text-sm">
+      <p class="text-gray-600 dark:text-dark-text">
+        Already have an account? 
+        <a routerLink="/login" class="font-medium text-primary hover:text-primary-hover">
+          Sign in
+        </a>
+      </p>
+    </div>
+  </div>
+</div> 
