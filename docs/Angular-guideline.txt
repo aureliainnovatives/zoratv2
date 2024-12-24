@@ -1,0 +1,473 @@
+Create a Document which describes best practices, modules, RBAC integration and module level permissions handling using JWT Token for Angular based projects. 
+
+Use latest Angular concepts like Signals and standalone components. Use Event Emitter to globally emit events rather than observables. 
+
+To start with these are modules and featuers I want -
+
+Common Features -
+
+- Add development and production environment file and replace production with development on build
+- Use tailwind css
+- Create light theme and dark theme as configuration option from the config file
+- Create language file which will have all the labels, titles and text commonly used.
+- Create a configuration settings for every supposedly hardcoded value in environment files
+- Use black gray theme for dark theme, use black white for bright theme
+- Keep crystal clear seperation on CSS, use maximum inbuild tailwind classes
+- Use proper router auth guard to identify JWT token which must create after successful login in localstorage. Identify correctly from the user's Roles permission to give access to specific action of the module (like read, create, edit, delete) and based on the specific component, if user doesn't have permission (from JWT token), then move user to login page. 
+- Create /components, /services, /shared kind of folders and keep all the components, services and shared files in these folders by module. Like modules, roles, permissions and users are admin modules so keep it under admin folder.
+
+Modules -
+- Login Page with Facebook, LinkedIn, Google, X.com and Github Login oAuth buttons with custom email and password field. Add sign up link 
+- Sign up Page with Custom Full name, email, password field with Facebook, LinkedIn, Google, X.com and Github Login oAuth buttons. Show Login link to move to login page
+- After login, main layout will have -
+	1. Header (left side title "Zorat AI", right side welcome message, notification icon,  change theme button from light to dark or other wise, logout icon)
+
+	2. Left side panel with margin from all 4 sides with rounded corner. Include parent child style menu with minimalistic UI. Only mouse hover, use matching color (green or neon) and on selection menu (based on route, highlight the menu.). To start with use menus as -
+
+	Admin 
+		- Modules
+		- Roles
+		- Permissions
+		- Users
+	Home
+	Workflows
+	Agents
+
+	Als, the left side panel will shrink to icons only with proper collapse expand icon buttons, upon expand, show icons + title.
+
+	3. Main window at center, properly aligned rounded cornered box for main content.
+
+- Listing Page for Modules which is part of CRUD operation
+	- Search, Add new button, Table with Edit Delete icons, pagination, dropdown to select items per page from table. 
+	- Use proper color theme for dark and bright theme. make it look professional grid. 
+
+- Add/Edit page for Modules
+
+
+
+API End Points to use :
+
+API Endpoints Table
+Title	URL	Description
+Auth - Signup	POST /api/auth/signup	Register a new user.
+Auth - Login	POST /api/auth/login	Authenticate user and issue a JWT token.
+Roles - Create Role	POST /api/roles	Create a new role.
+Roles - Get All Roles	GET /api/roles	Fetch all roles.
+Roles - Get Role By ID	GET /api/roles/67618a12345bc6bafc0f5e11	Fetch a role by its ID.
+Roles - Update Role	PUT /api/roles/67618a12345bc6bafc0f5e11	Update a role by its ID.
+Roles - Delete Role	DELETE /api/roles/67618a12345bc6bafc0f5e11	Delete a role by its ID.
+Permissions - Create	POST /api/permissions	Create a new permission.
+Permissions - Get All	GET /api/permissions	Fetch all permissions.
+Permissions - Get By ID	GET /api/permissions/67618b12345bc6bafc0f5e12	Fetch a permission by its ID.
+Permissions - Update	PUT /api/permissions/67618b12345bc6bafc0f5e12	Update a permission by its ID.
+Permissions - Delete	DELETE /api/permissions/67618b12345bc6bafc0f5e12	Delete a permission by its ID.
+Modules - Create	POST /api/modules	Create a new module.
+Modules - Get All	GET /api/modules	Fetch all modules.
+Modules - Get By ID	GET /api/modules/67618c12345bc6bafc0f5e13	Fetch a module by its ID.
+Modules - Update	PUT /api/modules/67618c12345bc6bafc0f5e13	Update a module by its ID.
+Modules - Delete	DELETE /api/modules/67618c12345bc6bafc0f5e13	Delete a module by its ID.
+Users - Create User	POST /api/users	Create a new user.
+Users - Get All Users	GET /api/users	Fetch all users.
+Users - Get User By ID	GET /api/users/67618d12345bc6bafc0f5e14	Fetch a user by their ID.
+Users - Update User	PUT /api/users/67618d12345bc6bafc0f5e14	Update a user by their ID.
+Users - Delete User	DELETE /api/users/67618d12345bc6bafc0f5e14	Delete a user by their ID.
+
+
+Database Sampel Data :
+
+
+Modules Collection:
+{
+    "_id" : ObjectId("676649a867c447775479e90f"),
+    "name" : "Modules",
+    "description" : "Module Management",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.271+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.271+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e910"),
+    "name" : "Users",
+    "description" : "User Management Module",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.271+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.271+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e911"),
+    "name" : "Roles",
+    "description" : "Role Management Module",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.271+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.271+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e912"),
+    "name" : "Permissions",
+    "description" : "Permission Management Module",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.271+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.271+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e913"),
+    "name" : "Agent",
+    "description" : "Agent Management Module",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.272+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.272+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e914"),
+    "name" : "Workflow",
+    "description" : "Workflow Management Module",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.272+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.272+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e915"),
+    "name" : "Integrations",
+    "description" : "Integration Management Module",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.272+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.272+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e916"),
+    "name" : "Settings",
+    "description" : "System Settings Module",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.272+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.272+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e917"),
+    "name" : "Dashboard",
+    "description" : "Dashboard and Metrics Module",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.272+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.272+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e918"),
+    "name" : "Notifications",
+    "description" : "Notifications Management Module",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.272+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.272+0000")
+}
+
+
+Permission Collection:
+
+{
+    "_id" : ObjectId("676649a867c447775479e90a"),
+    "name" : "create",
+    "description" : "Permission to create resources",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.266+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.266+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e90b"),
+    "name" : "read",
+    "description" : "Permission to read resources",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.266+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.266+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e90c"),
+    "name" : "update",
+    "description" : "Permission to update resources",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.266+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.266+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e90d"),
+    "name" : "delete",
+    "description" : "Permission to delete resources",
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.266+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.266+0000")
+}
+
+
+
+Roles Collection:
+{
+    "_id" : ObjectId("676649a867c447775479e91a"),
+    "name" : "Super Admin",
+    "description" : "Has all permissions",
+    "permissions" : [
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90a"),
+            "moduleId" : ObjectId("676649a867c447775479e90f"),
+            "_id" : ObjectId("676649a867c447775479e91b")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e90f"),
+            "_id" : ObjectId("676649a867c447775479e91c")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90c"),
+            "moduleId" : ObjectId("676649a867c447775479e90f"),
+            "_id" : ObjectId("676649a867c447775479e91d")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90d"),
+            "moduleId" : ObjectId("676649a867c447775479e90f"),
+            "_id" : ObjectId("676649a867c447775479e91e")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90a"),
+            "moduleId" : ObjectId("676649a867c447775479e910"),
+            "_id" : ObjectId("676649a867c447775479e91f")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e910"),
+            "_id" : ObjectId("676649a867c447775479e920")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90c"),
+            "moduleId" : ObjectId("676649a867c447775479e910"),
+            "_id" : ObjectId("676649a867c447775479e921")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90d"),
+            "moduleId" : ObjectId("676649a867c447775479e910"),
+            "_id" : ObjectId("676649a867c447775479e922")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90a"),
+            "moduleId" : ObjectId("676649a867c447775479e911"),
+            "_id" : ObjectId("676649a867c447775479e923")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e911"),
+            "_id" : ObjectId("676649a867c447775479e924")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90c"),
+            "moduleId" : ObjectId("676649a867c447775479e911"),
+            "_id" : ObjectId("676649a867c447775479e925")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90d"),
+            "moduleId" : ObjectId("676649a867c447775479e911"),
+            "_id" : ObjectId("676649a867c447775479e926")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90a"),
+            "moduleId" : ObjectId("676649a867c447775479e912"),
+            "_id" : ObjectId("676649a867c447775479e927")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e912"),
+            "_id" : ObjectId("676649a867c447775479e928")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90c"),
+            "moduleId" : ObjectId("676649a867c447775479e912"),
+            "_id" : ObjectId("676649a867c447775479e929")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90d"),
+            "moduleId" : ObjectId("676649a867c447775479e912"),
+            "_id" : ObjectId("676649a867c447775479e92a")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90a"),
+            "moduleId" : ObjectId("676649a867c447775479e913"),
+            "_id" : ObjectId("676649a867c447775479e92b")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e913"),
+            "_id" : ObjectId("676649a867c447775479e92c")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90c"),
+            "moduleId" : ObjectId("676649a867c447775479e913"),
+            "_id" : ObjectId("676649a867c447775479e92d")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90d"),
+            "moduleId" : ObjectId("676649a867c447775479e913"),
+            "_id" : ObjectId("676649a867c447775479e92e")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90a"),
+            "moduleId" : ObjectId("676649a867c447775479e914"),
+            "_id" : ObjectId("676649a867c447775479e92f")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e914"),
+            "_id" : ObjectId("676649a867c447775479e930")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90c"),
+            "moduleId" : ObjectId("676649a867c447775479e914"),
+            "_id" : ObjectId("676649a867c447775479e931")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90d"),
+            "moduleId" : ObjectId("676649a867c447775479e914"),
+            "_id" : ObjectId("676649a867c447775479e932")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90a"),
+            "moduleId" : ObjectId("676649a867c447775479e915"),
+            "_id" : ObjectId("676649a867c447775479e933")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e915"),
+            "_id" : ObjectId("676649a867c447775479e934")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90c"),
+            "moduleId" : ObjectId("676649a867c447775479e915"),
+            "_id" : ObjectId("676649a867c447775479e935")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90d"),
+            "moduleId" : ObjectId("676649a867c447775479e915"),
+            "_id" : ObjectId("676649a867c447775479e936")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90a"),
+            "moduleId" : ObjectId("676649a867c447775479e916"),
+            "_id" : ObjectId("676649a867c447775479e937")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e916"),
+            "_id" : ObjectId("676649a867c447775479e938")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90c"),
+            "moduleId" : ObjectId("676649a867c447775479e916"),
+            "_id" : ObjectId("676649a867c447775479e939")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90d"),
+            "moduleId" : ObjectId("676649a867c447775479e916"),
+            "_id" : ObjectId("676649a867c447775479e93a")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90a"),
+            "moduleId" : ObjectId("676649a867c447775479e917"),
+            "_id" : ObjectId("676649a867c447775479e93b")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e917"),
+            "_id" : ObjectId("676649a867c447775479e93c")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90c"),
+            "moduleId" : ObjectId("676649a867c447775479e917"),
+            "_id" : ObjectId("676649a867c447775479e93d")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90d"),
+            "moduleId" : ObjectId("676649a867c447775479e917"),
+            "_id" : ObjectId("676649a867c447775479e93e")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90a"),
+            "moduleId" : ObjectId("676649a867c447775479e918"),
+            "_id" : ObjectId("676649a867c447775479e93f")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e918"),
+            "_id" : ObjectId("676649a867c447775479e940")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90c"),
+            "moduleId" : ObjectId("676649a867c447775479e918"),
+            "_id" : ObjectId("676649a867c447775479e941")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90d"),
+            "moduleId" : ObjectId("676649a867c447775479e918"),
+            "_id" : ObjectId("676649a867c447775479e942")
+        }
+    ],
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.281+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.281+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e943"),
+    "name" : "Admin",
+    "description" : "Manages users and roles",
+    "permissions" : [
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e910"),
+            "_id" : ObjectId("676649a867c447775479e944")
+        },
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e911"),
+            "_id" : ObjectId("676649a867c447775479e945")
+        }
+    ],
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.281+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.281+0000")
+}
+{
+    "_id" : ObjectId("676649a867c447775479e946"),
+    "name" : "User",
+    "description" : "Basic access to system",
+    "permissions" : [
+        {
+            "permissionId" : ObjectId("676649a867c447775479e90b"),
+            "moduleId" : ObjectId("676649a867c447775479e910"),
+            "_id" : ObjectId("676649a867c447775479e947")
+        }
+    ],
+    "__v" : NumberInt(0),
+    "createdAt" : ISODate("2024-12-21T04:52:56.281+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.281+0000")
+}
+
+
+User Collection:
+{
+    "_id" : ObjectId("676649a867c447775479e949"),
+    "name" : "Super Admin",
+    "email" : "mayur.patil@aurelia.tech",
+    "password" : "$2b$10$gdGbmtN80HRqt7bEHRzqDOpKTDrWoUK3iboET5xPe.NECiqybp2VG",
+    "role" : ObjectId("676649a867c447775479e91a"),
+    "createdAt" : ISODate("2024-12-21T04:52:56.343+0000"),
+    "updatedAt" : ISODate("2024-12-21T04:52:56.343+0000"),
+    "__v" : NumberInt(0)
+}
+
+
+
+
+
+
+
+Milestones
+- MilestStone 1 : User Interface development with all the screens
+- Milestone 2 : Integrate Proper authorization and authentication
+- Milestone 3 : Integrate Web API for the CRUD
+
+
+Please add best practices from the MEAN stack perspective. 
+
+
