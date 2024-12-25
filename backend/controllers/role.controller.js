@@ -3,14 +3,14 @@ const roleService = require("../services/role.service");
 // Create a new Role
 exports.createRole = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, permissions } = req.body;
 
     // Input validation
     if (!name) {
       return res.status(400).json({ message: "Role name is required." });
     }
 
-    const role = await roleService.createRole({ name, description });
+    const role = await roleService.createRole({ name, description, permissions });
     res.status(201).json({ message: "Role created successfully", data: role });
   } catch (error) {
     res.status(500).json({ message: "Error creating role", error: error.message });
@@ -43,14 +43,18 @@ exports.getRoleById = async (req, res) => {
 // Update Role by ID
 exports.updateRole = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, permissions } = req.body;
 
     // Input validation
     if (!name) {
       return res.status(400).json({ message: "Role name is required." });
     }
 
-    const updatedRole = await roleService.updateRole(req.params.id, { name, description });
+    const updatedRole = await roleService.updateRole(req.params.id, { 
+      name, 
+      description, 
+      permissions 
+    });
     if (!updatedRole) {
       return res.status(404).json({ message: "Role not found" });
     }
