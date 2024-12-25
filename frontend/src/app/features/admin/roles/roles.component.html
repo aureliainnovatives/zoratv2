@@ -1,69 +1,108 @@
-<div class="bg-white dark:bg-dark-panel rounded-lg shadow">
-  <div class="px-6 py-4 border-b border-gray-200 dark:border-dark-border">
-    <div class="flex justify-between items-center">
-      <h2 class="text-xl font-semibold text-gray-800 dark:text-dark-heading">Roles</h2>
-      <button class="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors">
-        Add Role
-      </button>
+<div class="p-6">
+  <!-- Header section -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold text-gray-200">Roles</h1>
+    <button routerLink="add" class="btn-primary flex items-center gap-2">
+      <span class="material-icons text-lg">add</span>
+      Add Role
+    </button>
+  </div>
+
+  <!-- Search and items per page -->
+  <div class="flex justify-between items-center mb-4">
+    <div class="relative w-64">
+      <input type="text" 
+             [(ngModel)]="searchTerm" 
+             (ngModelChange)="onSearch()"
+             placeholder="Search roles..." 
+             class="w-full px-4 py-2 bg-[#2d2d2d] border border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-200">
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-sm text-gray-400">Items per page</span>
+      <div class="relative">
+        <select [(ngModel)]="itemsPerPage" 
+                (ngModelChange)="onItemsPerPageChange()"
+                class="bg-[#2d2d2d] border border-dark-border rounded-lg px-3 py-1.5 text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary appearance-none pr-8">
+          <option *ngFor="let option of itemsPerPageOptions" [value]="option">{{ option }}</option>
+        </select>
+        <span class="material-icons text-gray-400 text-lg absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">expand_more</span>
+      </div>
     </div>
   </div>
-  
-  <div class="p-6">
-    <!-- Search and filters -->
-    <div class="mb-4">
-      <input 
-        type="text" 
-        placeholder="Search roles..." 
-        class="w-full px-4 py-2 border border-gray-300 dark:border-dark-border rounded-md bg-white dark:bg-dark-bg text-gray-800 dark:text-dark-text"
-      >
-    </div>
 
-    <!-- Table -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
-        <thead>
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-dark-text uppercase tracking-wider">Name</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-dark-text uppercase tracking-wider">Description</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-dark-text uppercase tracking-wider">Permissions</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-dark-text uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-dark-border">
-          <tr>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-dark-text">Admin</td>
-            <td class="px-6 py-4 text-sm text-gray-900 dark:text-dark-text">Full system access</td>
-            <td class="px-6 py-4 text-sm text-gray-900 dark:text-dark-text">
-              <div class="flex flex-wrap gap-1">
-                <span class="px-2 py-1 bg-primary-100 text-primary-800 text-xs rounded-full">Create</span>
-                <span class="px-2 py-1 bg-primary-100 text-primary-800 text-xs rounded-full">Read</span>
-                <span class="px-2 py-1 bg-primary-100 text-primary-800 text-xs rounded-full">Update</span>
-                <span class="px-2 py-1 bg-primary-100 text-primary-800 text-xs rounded-full">Delete</span>
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-dark-text">
-              <button class="text-primary-500 hover:text-primary-600 mr-2">Edit</button>
-              <button class="text-red-500 hover:text-red-600">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <!-- Table container with black background -->
+  <div class="bg-[#1a1a1a] border border-dark-border rounded-lg overflow-hidden">
+    <table class="w-full">
+      <thead>
+        <tr class="border-b border-dark-border">
+          <th class="w-24 px-3 py-3 text-left text-sm font-medium text-gray-400 hover:text-primary cursor-pointer transition-colors whitespace-nowrap" 
+              (click)="sort('no')">
+            NO
+            <span class="material-icons text-xs align-middle ml-1">{{ getSortIcon('no') }}</span>
+          </th>
+          <th class="px-4 py-3 text-left text-sm font-medium text-gray-400 hover:text-primary cursor-pointer transition-colors" 
+              (click)="sort('name')">
+            NAME
+            <span class="material-icons text-xs align-middle ml-1">{{ getSortIcon('name') }}</span>
+          </th>
+          <th class="px-4 py-3 text-left text-sm font-medium text-gray-400 hover:text-primary cursor-pointer transition-colors" 
+              (click)="sort('description')">
+            DESCRIPTION
+            <span class="material-icons text-xs align-middle ml-1">{{ getSortIcon('description') }}</span>
+          </th>
+          <th class="px-4 py-3 text-left text-sm font-medium text-gray-400 hover:text-primary cursor-pointer transition-colors" 
+              (click)="sort('createdAt')">
+            CREATED AT
+            <span class="material-icons text-xs align-middle ml-1">{{ getSortIcon('createdAt') }}</span>
+          </th>
+          <th class="w-48 px-4 py-3 text-center text-sm font-medium text-gray-400">
+            ACTIONS
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let role of roles; let i = index" 
+            class="border-b border-dark-border hover:bg-[#2d2d2d] transition-colors">
+          <td class="px-3 py-3 text-sm text-gray-300">{{ getSerialNumber(i) }}</td>
+          <td class="px-4 py-3 text-sm text-gray-300">{{ role.name }}</td>
+          <td class="px-4 py-3 text-sm text-gray-300">{{ role.description }}</td>
+          <td class="px-4 py-3 text-sm text-gray-300">{{ role.createdAt | date:'MMM dd, yyyy, hh:mm a' }}</td>
+          <td class="px-4 py-3">
+            <div class="flex gap-3">
+              <button (click)="editRole(role)" 
+                      class="flex items-center gap-1 text-gray-400 hover:text-primary transition-colors"
+                      title="Edit Role">
+                <span class="material-icons text-lg">edit</span>
+                <span class="text-sm">Edit</span>
+              </button>
+              <button (click)="deleteRole(role)" 
+                      class="flex items-center gap-1 text-gray-400 hover:text-red-500 transition-colors"
+                      title="Delete Role">
+                <span class="material-icons text-lg">delete</span>
+                <span class="text-sm">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <!-- Pagination -->
-    <div class="mt-4 flex items-center justify-between">
-      <div class="flex items-center">
-        <select class="border border-gray-300 dark:border-dark-border rounded-md bg-white dark:bg-dark-bg text-gray-800 dark:text-dark-text px-2 py-1">
-          <option>10</option>
-          <option>25</option>
-          <option>50</option>
-        </select>
-        <span class="ml-2 text-sm text-gray-600 dark:text-dark-text">items per page</span>
+    <div class="px-4 py-3 flex items-center justify-between text-gray-400">
+      <div class="text-sm">
+        Showing {{ startIndex + 1 }} to {{ endIndex }} of {{ totalItems }} results
       </div>
-      
-      <div class="flex items-center space-x-2">
-        <button class="px-3 py-1 border border-gray-300 dark:border-dark-border rounded-md bg-white dark:bg-dark-bg text-gray-800 dark:text-dark-text">Previous</button>
-        <button class="px-3 py-1 border border-gray-300 dark:border-dark-border rounded-md bg-white dark:bg-dark-bg text-gray-800 dark:text-dark-text">Next</button>
+      <div class="flex gap-2">
+        <button [disabled]="currentPage === 1"
+                (click)="previousPage()"
+                class="px-3 py-1 text-sm hover:text-primary disabled:opacity-50 disabled:hover:text-gray-400 disabled:cursor-not-allowed transition-colors">
+          Previous
+        </button>
+        <button [disabled]="currentPage === totalPages"
+                (click)="nextPage()"
+                class="px-3 py-1 text-sm hover:text-primary disabled:opacity-50 disabled:hover:text-gray-400 disabled:cursor-not-allowed transition-colors">
+          Next
+        </button>
       </div>
     </div>
   </div>

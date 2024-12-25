@@ -1,0 +1,52 @@
+<div class="bg-[#1a1a1a] text-gray-200">
+  <!-- Header -->
+  <div class="p-4 border-b border-[#2d2d2d]">
+    <div class="flex justify-between items-start">
+      <div>
+        <h2 class="text-xl font-semibold text-gray-200">{{ roleName }}</h2>
+        <p class="text-sm text-gray-400 mt-1">{{ roleDescription }}</p>
+      </div>
+      <button 
+        (click)="close()"
+        class="text-gray-400 hover:text-gray-200 transition-colors"
+      >
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Permissions Grid -->
+  <div class="p-4 max-h-[calc(80vh-100px)] overflow-y-auto custom-scrollbar">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-medium text-gray-200">
+        {{ languageService.translate('users.roleDetails.modulesAndPermissions') }}
+      </h3>
+      <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch($event)"
+          placeholder="Search modules or permissions..."
+          class="px-3 py-1.5 bg-[#2d2d2d] border border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-200 text-sm w-64"
+        >
+      </div>
+    </div>
+
+    <div class="permissions-summary">
+      <div class="summary-grid">
+        <ng-container *ngFor="let moduleGroup of filteredGroupedPermissions | keyvalue">
+          <div class="module-summary">
+            <div class="module-name">{{ moduleGroup.key }}</div>
+            <div class="permission-list">
+              {{ moduleGroup.value.join(', ') }}
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <div *ngIf="!hasPermissions" class="text-center text-gray-400 py-4">
+        {{ languageService.translate('users.roleDetails.noPermissions') }}
+      </div>
+    </div>
+  </div>
+</div> 

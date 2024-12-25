@@ -1,0 +1,67 @@
+:host {
+  .permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+
+    .permission-card {
+      background-color: #2d2d2d;
+      border: 1px solid var(--border-dark);
+      border-radius: 0.5rem;
+      padding: 1rem;
+
+      .permission-title {
+        color: #e5e7eb;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      .permission-description {
+        color: #9ca3af;
+        font-size: 0.875rem;
+      }
+    }
+  }
+
+  .permissions-summary {
+    background-color: #2d2d2d;
+    border: 1px solid var(--border-dark);
+    border-radius: 0.5rem;
+    padding: 1rem;
+
+    .summary-title {
+      color: #e5e7eb;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      @media (min-width: 768px) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .module-summary {
+      padding: 0.5rem;
+      border-left: 2px solid var(--primary);
+      background-color: #1a1a1a;
+      border-radius: 0.25rem;
+
+      .module-name {
+        color: #e5e7eb;
+        font-weight: 500;
+        font-size: 0.875rem;
+      }
+
+      .permission-list {
+        color: #9ca3af;
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+        line-height: 1.3;
+      }
+    }
+  }
+} 

@@ -1,0 +1,68 @@
+:host {
+  display: block;
+
+  ::ng-deep .mat-dialog-container {
+    padding: 0;
+    border-radius: 8px;
+    background: #1a1a1a;
+    color: #e5e7eb;
+    overflow: hidden;
+    border: 1px solid #2d2d2d;
+    outline: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #4a5568 #1a1a1a;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #1a1a1a;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #4a5568;
+      border-radius: 3px;
+    }
+  }
+
+  .permissions-summary {
+    background-color: #2d2d2d;
+    border: 1px solid var(--border-dark);
+    border-radius: 0.5rem;
+    padding: 1rem;
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      @media (min-width: 768px) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .module-summary {
+      padding: 0.5rem;
+      border-left: 2px solid var(--primary);
+      background-color: #1a1a1a;
+      border-radius: 0.25rem;
+
+      .module-name {
+        color: #e5e7eb;
+        font-weight: 500;
+        font-size: 0.875rem;
+      }
+
+      .permission-list {
+        color: #9ca3af;
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+        line-height: 1.3;
+      }
+    }
+  }
+} 
