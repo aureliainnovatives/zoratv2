@@ -31,7 +31,8 @@
       "itemsPerPage": "Items per page",
       "previous": "Previous",
       "next": "Next",
-      "results": "results"
+      "results": "results",
+      "itemsPerPage": "Items per page"
     },
     "columns": {
       "no": "NO"
@@ -41,6 +42,7 @@
     "list": {
       "title": "Modules",
       "addNew": "Add Module",
+      "search": "Search modules...",
       "columns": {
         "name": "NAME",
         "description": "DESCRIPTION",
@@ -73,6 +75,7 @@
     "list": {
       "title": "Permissions",
       "addNew": "Add Permission",
+      "search": "Search permissions...",
       "columns": {
         "name": "NAME",
         "description": "DESCRIPTION",
@@ -105,6 +108,7 @@
     "list": {
       "title": "Roles",
       "addNew": "Add Role",
+      "search": "Search roles...",
       "columns": {
         "name": "NAME",
         "description": "DESCRIPTION",
@@ -141,7 +145,8 @@
   "users": {
     "list": {
       "title": "Users",
-      "addNew": "Add User",
+      "addNew": "Add New User",
+      "search": "Search users...",
       "columns": {
         "name": "NAME",
         "email": "EMAIL",
@@ -162,7 +167,7 @@
         "password": "Password",
         "confirmPassword": "Confirm Password",
         "role": "Role",
-        "selectRole": "Select Role"
+        "selectRole": "Select a role"
       }
     },
     "messages": {

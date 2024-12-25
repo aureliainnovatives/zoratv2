@@ -13,113 +13,128 @@
 
   <!-- Form -->
   <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
-    <!-- Name -->
-    <div class="space-y-2">
-      <label for="name" class="block text-sm font-medium text-gray-300">
-        {{ languageService.translate('users.form.fields.name') }}
-      </label>
-      <input
-        type="text"
-        id="name"
-        formControlName="name"
-        class="w-full px-4 py-2 bg-[#2d2d2d] border border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-200"
-        [class.border-red-500]="form.get('name')?.touched && form.get('name')?.invalid"
-      >
-      <div *ngIf="form.get('name')?.touched && form.get('name')?.invalid" class="text-sm text-red-500">
-        {{ getErrorMessage('name') }}
+    <div class="bg-[#1a1a1a] border border-[rgb(74,75,77)] rounded-lg p-6 space-y-6">
+      <!-- Name -->
+      <div class="space-y-2">
+        <label for="name" class="block text-sm font-medium text-gray-300">
+          {{ languageService.translate('users.form.fields.name') }}
+        </label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          class="w-full px-4 py-2 bg-[#2d2d2d] border border-[rgb(74,75,77)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10b981] text-gray-200"
+          [class.border-red-500]="form.get('name')?.touched && form.get('name')?.invalid"
+        >
+        <div *ngIf="form.get('name')?.touched && form.get('name')?.invalid" class="text-sm text-red-500">
+          {{ getErrorMessage('name') }}
+        </div>
       </div>
-    </div>
 
-    <!-- Email -->
-    <div class="space-y-2">
-      <label for="email" class="block text-sm font-medium text-gray-300">
-        {{ languageService.translate('users.form.fields.email') }}
-      </label>
-      <input
-        type="email"
-        id="email"
-        formControlName="email"
-        class="w-full px-4 py-2 bg-[#2d2d2d] border border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-200"
-        [class.border-red-500]="form.get('email')?.touched && form.get('email')?.invalid"
-      >
-      <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="text-sm text-red-500">
-        {{ getErrorMessage('email') }}
+      <!-- Email -->
+      <div class="space-y-2">
+        <label for="email" class="block text-sm font-medium text-gray-300">
+          {{ languageService.translate('users.form.fields.email') }}
+        </label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="w-full px-4 py-2 bg-[#2d2d2d] border border-[rgb(74,75,77)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10b981] text-gray-200"
+          [class.border-red-500]="form.get('email')?.touched && form.get('email')?.invalid"
+        >
+        <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="text-sm text-red-500">
+          {{ getErrorMessage('email') }}
+        </div>
       </div>
-    </div>
 
-    <!-- Password -->
-    <div *ngIf="!isEditMode" class="space-y-2">
-      <label for="password" class="block text-sm font-medium text-gray-300">
-        {{ languageService.translate('users.form.fields.password') }}
-      </label>
-      <input
-        type="password"
-        id="password"
-        formControlName="password"
-        class="w-full px-4 py-2 bg-[#2d2d2d] border border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-200"
-        [class.border-red-500]="form.get('password')?.touched && form.get('password')?.invalid"
-      >
-      <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="text-sm text-red-500">
-        {{ getErrorMessage('password') }}
+      <!-- Password -->
+      <div *ngIf="!isEditMode" class="space-y-2">
+        <label for="password" class="block text-sm font-medium text-gray-300">
+          {{ languageService.translate('users.form.fields.password') }}
+        </label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="w-full px-4 py-2 bg-[#2d2d2d] border border-[rgb(74,75,77)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10b981] text-gray-200"
+          [class.border-red-500]="form.get('password')?.touched && form.get('password')?.invalid"
+        >
+        <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="text-sm text-red-500">
+          {{ getErrorMessage('password') }}
+        </div>
       </div>
-    </div>
 
-    <!-- Confirm Password -->
-    <div *ngIf="!isEditMode" class="space-y-2">
-      <label for="confirmPassword" class="block text-sm font-medium text-gray-300">
-        {{ languageService.translate('users.form.fields.confirmPassword') }}
-      </label>
-      <input
-        type="password"
-        id="confirmPassword"
-        formControlName="confirmPassword"
-        class="w-full px-4 py-2 bg-[#2d2d2d] border border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-200"
-        [class.border-red-500]="form.get('confirmPassword')?.touched && (form.get('confirmPassword')?.invalid || form.hasError('passwordMismatch'))"
-      >
-      <div *ngIf="form.get('confirmPassword')?.touched && (form.get('confirmPassword')?.invalid || form.hasError('passwordMismatch'))" class="text-sm text-red-500">
-        {{ form.get('confirmPassword')?.errors?.['required'] ? getErrorMessage('confirmPassword') : getPasswordMatchError() }}
+      <!-- Confirm Password -->
+      <div *ngIf="!isEditMode" class="space-y-2">
+        <label for="confirmPassword" class="block text-sm font-medium text-gray-300">
+          {{ languageService.translate('users.form.fields.confirmPassword') }}
+        </label>
+        <input
+          type="password"
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          class="w-full px-4 py-2 bg-[#2d2d2d] border border-[rgb(74,75,77)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10b981] text-gray-200"
+          [class.border-red-500]="form.get('confirmPassword')?.touched && (form.get('confirmPassword')?.invalid || form.hasError('passwordMismatch'))"
+        >
+        <div *ngIf="form.get('confirmPassword')?.touched && (form.get('confirmPassword')?.invalid || form.hasError('passwordMismatch'))" class="text-sm text-red-500">
+          {{ form.get('confirmPassword')?.errors?.['required'] ? getErrorMessage('confirmPassword') : getPasswordMatchError() }}
+        </div>
       </div>
-    </div>
 
-    <!-- Role -->
-    <div class="space-y-2">
-      <label for="role" class="block text-sm font-medium text-gray-300">
-        {{ languageService.translate('users.form.fields.role') }}
-      </label>
-      <mat-select
-        id="role"
-        formControlName="role"
-        class="w-full px-4 py-2 bg-[#2d2d2d] border border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-200"
-        [class.border-red-500]="form.get('role')?.touched && form.get('role')?.invalid"
-      >
-        <mat-option [value]="">
-          {{ languageService.translate('users.form.fields.selectRole') }}
-        </mat-option>
-        <mat-option *ngFor="let role of roles" [value]="role._id">
-          {{ role.name }}
-        </mat-option>
-      </mat-select>
-      <div *ngIf="form.get('role')?.touched && form.get('role')?.invalid" class="text-sm text-red-500">
-        {{ getErrorMessage('role') }}
+      <!-- Role -->
+      <div class="space-y-2">
+        <label for="role" class="block text-sm font-medium text-gray-300">
+          {{ languageService.translate('users.form.fields.role') }}
+        </label>
+        <select
+          id="role"
+          formControlName="role"
+          class="w-full px-4 py-2 bg-[#2d2d2d] border border-[rgb(74,75,77)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10b981] text-gray-200"
+          [class.border-red-500]="form.get('role')?.touched && form.get('role')?.invalid"
+        >
+          <option value="">
+            {{ languageService.translate('users.form.fields.selectRole') }}
+          </option>
+          <option *ngFor="let role of roles" [value]="role._id">
+            {{ role.name }} - {{ role.description }}
+          </option>
+        </select>
+        <div *ngIf="form.get('role')?.touched && form.get('role')?.invalid" class="text-sm text-red-500">
+          {{ getErrorMessage('role') }}
+        </div>
       </div>
-    </div>
 
-    <!-- Form Actions -->
-    <div class="flex justify-end space-x-4">
-      <button
-        type="button"
-        (click)="onCancel()"
-        class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-gray-100 transition-colors"
-      >
-        {{ languageService.translate('common.actions.cancel') }}
-      </button>
-      <button
-        type="submit"
-        [disabled]="form.invalid || loading"
-        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {{ languageService.translate('common.actions.save') }}
-      </button>
+      <!-- Roles and Permissions Box -->
+      <div *ngIf="selectedRole && hasPermissions" class="bg-[#2d2d2d] border border-[rgb(74,75,77)] rounded-lg p-6 space-y-6">
+        <h3 class="text-lg font-medium text-gray-200">{{ languageService.translate('users.roleDetails.modulesAndPermissions') }}</h3>
+        <div class="permissions-grid">
+          <div *ngFor="let module of groupedPermissions | keyvalue" class="permission-card">
+            <div class="module-name">{{ module.key }}</div>
+            <div class="permissions-list">
+              {{ module.value.join(', ') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-4">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-gray-100 transition-colors"
+        >
+          {{ languageService.translate('common.actions.cancel') }}
+        </button>
+        <button
+          type="submit"
+          [disabled]="form.invalid || loading"
+          class="px-4 py-2 bg-[#10b981] text-white rounded-lg hover:bg-[#059669] focus:outline-none focus:ring-2 focus:ring-[#10b981] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {{ languageService.translate('common.actions.save') }}
+        </button>
+      </div>
     </div>
   </form>
 </div> 

@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  height: 100%;
+
+  .permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+
+    .permission-card {
+      background-color: #1a1a1a;
+      border-radius: 0.25rem;
+      padding: 1rem;
+      border-left: 2px solid #10b981;
+
+      .module-name {
+        color: #e5e7eb;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
+
+      .permissions-list {
+        color: #9ca3af;
+        font-size: 0.875rem;
+        line-height: 1.25;
+      }
+    }
+  }
+}
+
+.bg-primary {
+  background-color: #4f46e5;
+}
+
+.bg-primary-dark {
+  background-color: #4338ca;
+}
+
+.text-primary {
+  color: #4f46e5;
+}
+
+.border-dark-border {
+  border-color: #2d2d2d;
+} 

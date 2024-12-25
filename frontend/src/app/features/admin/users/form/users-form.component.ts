@@ -1,171 +1,225 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
-import { UsersService } from '../../services/users.service';
-import { RolesService, Role } from '../../services/roles.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LanguageService } from '../../../../core/services/language.service';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { UsersService } from '../../services/users.service';
+import { RolesService } from '../../services/roles.service';
+import { ModulesService } from '../../services/modules.service';
+import { PermissionsService } from '../../services/permissions.service';
+import { Role } from '../../services/roles.service';
+import { Module } from '../../services/modules.service';
+import { Permission } from '../../services/permissions.service';
+import { forkJoin } from 'rxjs';
+
+interface User {
+  _id?: string;
+  name: string;
+  email: string;
+  role: string | Role;
+}
 
 @Component({
   selector: 'app-users-form',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatProgressSpinnerModule,
-    MatSelectModule
-  ],
-  templateUrl: './users-form.component.html'
+  imports: [CommonModule, ReactiveFormsModule, MatProgressSpinnerModule],
+  templateUrl: './users-form.component.html',
+  styleUrls: ['./users-form.component.scss']
 })
 export class UsersFormComponent implements OnInit {
   form: FormGroup;
   loading = false;
-  roles: Role[] = [];
   isEditMode = false;
-  userId: string | null = null;
+  roles: Role[] = [];
+  selectedRole?: Role;
+  modules: Module[] = [];
+  permissions: Permission[] = [];
+  groupedPermissions: { [key: string]: string[] } = {};
+  hasPermissions = false;
 
   constructor(
     private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    public languageService: LanguageService,
     private usersService: UsersService,
     private rolesService: RolesService,
-    private router: Router,
-    private route: ActivatedRoute,
-    public languageService: LanguageService,
-    private notificationService: NotificationService
+    private modulesService: ModulesService,
+    private permissionsService: PermissionsService
   ) {
     this.form = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required]],
+      password: [''],
+      confirmPassword: [''],
       role: ['', [Validators.required]]
-    }, {
-      validators: this.passwordMatchValidator
-    });
+    }, { validator: this.passwordMatchValidator });
   }
 
   ngOnInit(): void {
-    this.loadRoles();
-    this.userId = this.route.snapshot.paramMap.get('id');
-    if (this.userId) {
-      this.isEditMode = true;
-      this.loadUser(this.userId);
-      // Remove password validators in edit mode
-      this.form.get('password')?.clearValidators();
-      this.form.get('confirmPassword')?.clearValidators();
+    const userId = this.route.snapshot.params['id'];
+    this.isEditMode = !!userId;
+
+    // Set password validators based on edit mode
+    if (!this.isEditMode) {
+      this.form.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
+      this.form.get('confirmPassword')?.setValidators([Validators.required]);
       this.form.get('password')?.updateValueAndValidity();
       this.form.get('confirmPassword')?.updateValueAndValidity();
     }
+
+    this.loadData();
   }
 
-  private async loadRoles(): Promise<void> {
-    try {
-      this.roles = await this.rolesService.getRoles().toPromise() || [];
-    } catch (error) {
-      console.error('Error loading roles:', error);
-      this.notificationService.error(
-        this.languageService.translate('common.status.error')
-      );
-    }
-  }
-
-  private async loadUser(id: string): Promise<void> {
+  private loadData(): void {
     this.loading = true;
-    try {
-      const user = await this.usersService.getUser(id).toPromise();
-      if (user) {
-        this.form.patchValue({
-          name: user.name,
-          email: user.email,
-          role: typeof user.role === 'string' ? user.role : user.role._id
-        });
+    const userId = this.route.snapshot.params['id'];
+
+    // Load roles, modules, and permissions
+    forkJoin({
+      roles: this.rolesService.getRoles(),
+      modules: this.modulesService.getModules(),
+      permissions: this.permissionsService.getPermissions(),
+      ...(userId ? { user: this.usersService.getUser(userId) } : {})
+    }).subscribe({
+      next: (result) => {
+        this.roles = result.roles;
+        this.modules = result.modules;
+        this.permissions = result.permissions;
+
+        if (this.isEditMode && 'user' in result) {
+          const user = result.user as User;
+          if (user) {
+            this.form.patchValue({
+              name: user.name,
+              email: user.email,
+              role: typeof user.role === 'string' ? user.role : user.role['_id']
+            });
+            this.onRoleSelect(typeof user.role === 'string' ? user.role : user.role['_id']);
+          }
+        }
+
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading data:', error);
+        this.loading = false;
       }
-    } catch (error) {
-      console.error('Error loading user:', error);
-      this.notificationService.error(
-        this.languageService.translate('users.messages.loadError')
-      );
-      this.router.navigate(['/admin/users']);
-    } finally {
-      this.loading = false;
+    });
+
+    // Subscribe to role changes
+    this.form.get('role')?.valueChanges.subscribe(roleId => {
+      if (roleId) {
+        this.onRoleSelect(roleId);
+      } else {
+        this.selectedRole = undefined;
+        this.groupedPermissions = {};
+        this.hasPermissions = false;
+      }
+    });
+  }
+
+  onRoleSelect(roleId: string): void {
+    if (!roleId) {
+      this.selectedRole = undefined;
+      this.groupedPermissions = {};
+      this.hasPermissions = false;
+      return;
+    }
+
+    const role = this.roles.find(r => r['_id'] === roleId);
+    if (role) {
+      this.selectedRole = role;
+      this.groupPermissions();
+    } else {
+      this.rolesService.getRole(roleId).subscribe({
+        next: (role) => {
+          this.selectedRole = role;
+          this.groupPermissions();
+        },
+        error: (error) => {
+          console.error('Error loading role details:', error);
+        }
+      });
     }
   }
 
-  private passwordMatchValidator(group: FormGroup): { [key: string]: any } | null {
-    const password = group.get('password');
-    const confirmPassword = group.get('confirmPassword');
+  private groupPermissions(): void {
+    if (!this.selectedRole?.permissions?.length) {
+      this.hasPermissions = false;
+      return;
+    }
 
-    if (!password || !confirmPassword) return null;
-
-    return password.value === confirmPassword.value
-      ? null
-      : { passwordMismatch: true };
+    this.hasPermissions = true;
+    this.groupedPermissions = this.selectedRole.permissions.reduce((acc, curr) => {
+      // Find the actual module and permission names from their IDs
+      const module = this.modules.find(m => m['_id'] === (typeof curr.moduleId === 'string' ? curr.moduleId : curr.moduleId['_id']));
+      const permission = this.permissions.find(p => p['_id'] === (typeof curr.permissionId === 'string' ? curr.permissionId : curr.permissionId['_id']));
+      
+      if (module && permission) {
+        if (!acc[module.name]) {
+          acc[module.name] = [];
+        }
+        acc[module.name].push(permission.name);
+      }
+      
+      return acc;
+    }, {} as { [key: string]: string[] });
   }
 
-  getErrorMessage(controlName: string): string {
-    const control = this.form.get(controlName);
-    if (!control || !control.errors || !control.touched) return '';
+  getErrorMessage(field: string): string {
+    const control = this.form.get(field);
+    if (!control) return '';
 
-    const errors = control.errors;
-    const errorMessages: { [key: string]: string } = {
-      required: this.languageService.translate('common.validation.required'),
-      email: this.languageService.translate('common.validation.email'),
-      minlength: this.languageService.translate('common.validation.minLength', {
-        min: controlName === 'password' ? 8 : 3
-      })
-    };
-
-    const firstError = Object.keys(errors)[0];
-    return errorMessages[firstError] || '';
-  }
-
-  getPasswordMatchError(): string {
-    if (this.form.hasError('passwordMismatch')) {
-      return this.languageService.translate('common.validation.passwordMatch');
+    if (control.hasError('required')) {
+      return this.languageService.translate('common.validation.required');
+    }
+    if (control.hasError('email')) {
+      return this.languageService.translate('common.validation.email');
+    }
+    if (control.hasError('minlength')) {
+      return this.languageService.translate('common.validation.minLength').replace('{{min}}', '6');
     }
     return '';
   }
 
-  async onSubmit(): Promise<void> {
-    if (this.form.invalid) {
-      Object.keys(this.form.controls).forEach(key => {
-        const control = this.form.get(key);
-        if (control) control.markAsTouched();
-      });
-      return;
-    }
+  getPasswordMatchError(): string {
+    return this.languageService.translate('common.validation.passwordMatch');
+  }
+
+  private passwordMatchValidator(g: FormGroup) {
+    const password = g.get('password');
+    const confirmPassword = g.get('confirmPassword');
+    
+    if (!password || !confirmPassword) return null;
+    
+    return password.value === confirmPassword.value ? null : { 'passwordMismatch': true };
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) return;
+
+    const userData = {
+      ...this.form.value,
+      // Only include password fields for new users
+      ...(this.isEditMode ? { password: undefined, confirmPassword: undefined } : {})
+    };
 
     this.loading = true;
-    try {
-      const formData = { ...this.form.value };
-      if (this.isEditMode && !formData.password) {
-        delete formData.password;
-        delete formData.confirmPassword;
-      }
+    const request = this.isEditMode
+      ? this.usersService.updateUser(this.route.snapshot.params['id'], userData)
+      : this.usersService.createUser(userData);
 
-      if (this.isEditMode && this.userId) {
-        await this.usersService.updateUser(this.userId, formData).toPromise();
-        this.notificationService.success(
-          this.languageService.translate('users.messages.updateSuccess')
-        );
-      } else {
-        await this.usersService.createUser(formData).toPromise();
-        this.notificationService.success(
-          this.languageService.translate('users.messages.createSuccess')
-        );
+    request.subscribe({
+      next: () => {
+        this.router.navigate(['/admin/users']);
+      },
+      error: (error) => {
+        console.error('Error saving user:', error);
+        this.loading = false;
       }
-      this.router.navigate(['/admin/users']);
-    } catch (error) {
-      console.error('Error saving user:', error);
-      this.notificationService.error(
-        this.languageService.translate('users.messages.saveError')
-      );
-    } finally {
-      this.loading = false;
-    }
+    });
   }
 
   onCancel(): void {
