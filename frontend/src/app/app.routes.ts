@@ -19,50 +19,60 @@ export const routes: Routes = [
   { 
     path: '', 
     component: MainLayoutComponent,
-    canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: HomeComponent },
       { 
-        path: 'admin',
-        children: [
-          { path: '', redirectTo: 'modules', pathMatch: 'full' },
-          { 
-            path: 'modules',
-            children: [
-              { path: '', component: ModulesComponent },
-              { path: 'add', component: ModulesFormComponent },
-              { path: 'edit/:id', component: ModulesFormComponent }
-            ]
-          },
-          { 
-            path: 'roles',
-            children: [
-              { path: '', component: RolesComponent },
-              { path: 'add', component: RolesFormComponent },
-              { path: 'edit/:id', component: RolesFormComponent }
-            ]
-          },
-          { 
-            path: 'permissions',
-            children: [
-              { path: '', component: PermissionsComponent },
-              { path: 'add', component: PermissionsFormComponent },
-              { path: 'edit/:id', component: PermissionsFormComponent }
-            ]
-          },
-          { 
-            path: 'users',
-            children: [
-              { path: '', component: UsersComponent },
-              { path: 'add', component: UsersFormComponent },
-              { path: 'edit/:id', component: UsersFormComponent }
-            ]
-          }
-        ]
+        path: 'playground',
+        loadComponent: () => import('./features/playground/playground.component')
+          .then(m => m.PlaygroundComponent)
       },
-      { path: 'workflows', component: WorkflowsComponent },
-      { path: 'agents', component: AgentsComponent }
+      { 
+        path: '',
+        canActivate: [authGuard],
+        children: [
+          { path: '', redirectTo: 'home', pathMatch: 'full' },
+          { path: 'home', component: HomeComponent },
+          { 
+            path: 'admin',
+            children: [
+              { path: '', redirectTo: 'modules', pathMatch: 'full' },
+              { 
+                path: 'modules',
+                children: [
+                  { path: '', component: ModulesComponent },
+                  { path: 'add', component: ModulesFormComponent },
+                  { path: 'edit/:id', component: ModulesFormComponent }
+                ]
+              },
+              { 
+                path: 'roles',
+                children: [
+                  { path: '', component: RolesComponent },
+                  { path: 'add', component: RolesFormComponent },
+                  { path: 'edit/:id', component: RolesFormComponent }
+                ]
+              },
+              { 
+                path: 'permissions',
+                children: [
+                  { path: '', component: PermissionsComponent },
+                  { path: 'add', component: PermissionsFormComponent },
+                  { path: 'edit/:id', component: PermissionsFormComponent }
+                ]
+              },
+              { 
+                path: 'users',
+                children: [
+                  { path: '', component: UsersComponent },
+                  { path: 'add', component: UsersFormComponent },
+                  { path: 'edit/:id', component: UsersFormComponent }
+                ]
+              }
+            ]
+          },
+          { path: 'workflows', component: WorkflowsComponent },
+          { path: 'agents', component: AgentsComponent }
+        ]
+      }
     ]
   },
   { path: 'login', component: LoginComponent },

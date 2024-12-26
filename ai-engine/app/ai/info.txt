@@ -1,0 +1,24 @@
+AI Module Directory Structure
+
+This directory contains all AI-related implementations and abstractions.
+
+Key Components:
+1. llm/ - Language Model implementations and interfaces
+2. embeddings/ - Text embedding and vector operations
+3. tools/ - Tool calling implementations for LLMs
+4. chains/ - LangChain/LangGraph based chain implementations
+
+Best Practices:
+- Keep provider-specific implementations separate
+- Use abstract base classes for interfaces
+- Implement factory patterns for provider selection
+- Handle errors gracefully with custom exceptions
+- Cache expensive operations where possible
+- Use async operations for better performance
+
+Future Considerations:
+- Vector database integrations
+- Multi-modal model support
+- Custom tool implementations
+- Advanced reasoning chains
+- Agent implementations 

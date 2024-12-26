@@ -1,0 +1,53 @@
+Utils Directory
+
+Purpose:
+Contains utility functions, helpers, and common functionality used across the application.
+
+Components:
+1. Constants:
+   - System-wide constants
+   - Configuration constants
+   - Error messages
+   - Response messages
+
+2. Helpers:
+   - String manipulation
+   - Date/time utilities
+   - Data transformation
+   - Validation helpers
+
+3. Cache Management:
+   - In-memory cache
+   - Cache invalidation
+   - Cache warm-up
+   - Cache monitoring
+
+4. Error Handling:
+   - Custom exceptions
+   - Error mappers
+   - Error logging
+   - Error tracking
+
+5. Security:
+   - API key management
+   - Token handling
+   - Encryption/decryption
+   - Security helpers
+
+Best Practices:
+- Keep functions pure and stateless
+- Implement proper error handling
+- Use proper typing
+- Include proper documentation
+- Write unit tests
+- Use proper logging
+- Follow DRY principles
+
+Implementation Guidelines:
+1. Use type hints
+2. Include docstrings
+3. Handle errors gracefully
+4. Log important operations
+5. Cache expensive operations
+6. Use async where appropriate
+7. Follow SOLID principles 

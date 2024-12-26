@@ -1,0 +1,51 @@
+Repositories Directory
+
+Purpose:
+Handles all database interactions and data access patterns.
+
+Components:
+1. Base Repository:
+   - Common database operations
+   - Connection management
+   - Query builders
+   - Error handling
+
+2. Specific Repositories:
+   - LLM configurations
+   - Chat histories
+   - User data
+   - Tool configurations
+   - Cache management
+
+Implementation Guidelines:
+1. Use async operations
+2. Implement proper error handling
+3. Use connection pooling
+4. Implement caching strategies
+5. Use proper indexing
+6. Implement retry mechanisms
+7. Handle transactions properly
+
+Best Practices:
+- Single responsibility per repository
+- Use dependency injection
+- Implement proper logging
+- Cache frequently accessed data
+- Use proper connection pooling
+- Implement proper error handling
+- Use proper transaction management
+
+Performance Considerations:
+- Implement proper indexing
+- Use bulk operations where possible
+- Implement proper caching
+- Monitor query performance
+- Use proper connection pooling
+- Implement proper error handling
+- Use proper transaction management
+
+Caching Strategies:
+- In-memory caching for configurations
+- Redis for distributed caching
+- Cache invalidation strategies
+- Cache warm-up procedures 

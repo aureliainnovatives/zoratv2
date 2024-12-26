@@ -11,6 +11,7 @@ const Role = require("../models/Role");
 const Permission = require("../models/Permission");
 const Module = require("../models/Module");
 const User = require("../models/User");
+const LLM = require("../models/AIModel"); // Include the LLM model
 
 const seedData = async () => {
   try {
@@ -113,6 +114,116 @@ const seedData = async () => {
     });
 
     console.log("Super Admin user seeded");
+
+
+      // Seed LLM Models
+      const llmModels = [
+        {
+          name: "GPT-3.5 Turbo",
+          description: "OpenAI's GPT-3.5 Turbo model",
+          type: "API_BASED",
+          provider: "OPENAI",
+          apiKey: "your-openai-api-key",
+          baseUrl: "https://api.openai.com/v1",
+          modelName: "gpt-3.5-turbo",
+          isActive: true,
+          maxTokens: 4096,
+          temperature: 0.7,
+        },
+        {
+          name: "GPT-4",
+          description: "OpenAI's GPT-4 model",
+          type: "API_BASED",
+          provider: "OPENAI",
+          apiKey: "your-openai-api-key",
+          baseUrl: "https://api.openai.com/v1",
+          modelName: "gpt-4",
+          isActive: true,
+          maxTokens: 8192,
+          temperature: 0.7,
+        },
+        {
+          name: "GPT-40",
+          description: "OpenAI's hypothetical GPT-40 model",
+          type: "API_BASED",
+          provider: "OPENAI",
+          apiKey: "your-openai-api-key",
+          baseUrl: "https://api.openai.com/v1",
+          modelName: "gpt-40",
+          isActive: true,
+          maxTokens: 16000,
+          temperature: 0.9,
+        },
+        {
+          name: "Google Gemini",
+          description: "Google's Gemini model for advanced tasks",
+          type: "API_BASED",
+          provider: "GOOGLE",
+          apiKey: "your-google-api-key",
+          baseUrl: "https://api.google.com/gemini",
+          modelName: "gemini-v1",
+          isActive: true,
+          maxTokens: 4096,
+          temperature: 0.8,
+        },
+        {
+          name: "Claude Sonnet",
+          description: "Anthropic Claude Sonnet model (Local)",
+          type: "LOCAL_URL",
+          provider: "LOCAL",
+          baseUrl: "http://localhost:5001",
+          modelName: "claude-sonnet",
+          isActive: true,
+          maxTokens: 2048,
+          temperature: 0.6,
+        },
+        {
+          name: "Claude Opus",
+          description: "Anthropic Claude Opus model (Local)",
+          type: "LOCAL_URL",
+          provider: "LOCAL",
+          baseUrl: "http://localhost:5002",
+          modelName: "claude-opus",
+          isActive: true,
+          maxTokens: 2048,
+          temperature: 0.6,
+        },
+        {
+          name: "Claude Haiku",
+          description: "Anthropic Claude Haiku model (Local)",
+          type: "LOCAL_URL",
+          provider: "LOCAL",
+          baseUrl: "http://localhost:5003",
+          modelName: "claude-haiku",
+          isActive: true,
+          maxTokens: 2048,
+          temperature: 0.6,
+        },
+        {
+          name: "Llama 3.3",
+          description: "Meta's Llama 3.3 model (Local)",
+          type: "LOCAL_URL",
+          provider: "LOCAL",
+          baseUrl: "http://localhost:5004",
+          modelName: "llama-3.3",
+          isActive: true,
+          maxTokens: 4096,
+          temperature: 0.7,
+        },
+        {
+          name: "Qwen",
+          description: "Alibaba's Qwen model (Local)",
+          type: "LOCAL_URL",
+          provider: "LOCAL",
+          baseUrl: "http://localhost:5005",
+          modelName: "qwen-v1",
+          isActive: true,
+          maxTokens: 4096,
+          temperature: 0.7,
+        },
+      ];
+      await LLM.insertMany(llmModels);
+      console.log("LLM models seeded");
 
     // Exit process
     process.exit();

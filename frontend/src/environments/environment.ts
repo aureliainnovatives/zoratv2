@@ -1,6 +1,18 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000/api',
+  socketUrl: 'http://localhost:3000',
+  aiApiUrl: 'http://localhost:5001/api/v1',
+  chat: {
+    useStreaming: true,
+    streamingEndpoint: '/api/v1/agent/chat/stream',
+    plainEndpoint: '/api/v1/agent/chat',
+    defaultLLM: 'GPT-3.5 Turbo',
+    reconnectAttempts: 3,
+    reconnectInterval: 3000,
+    typingIndicatorDelay: 500,
+    socketNamespace: '/agent-chat'
+  },
   auth: {
     tokenKey: 'auth_token',
     refreshTokenKey: 'refresh_token',
@@ -79,22 +91,9 @@ export const environment = {
     supportedLanguages: ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'zh', 'ja', 'ko'],
     fallbackLanguage: 'en'
   },
-  pagination: {
-    defaultPageSize: 10,
-    pageSizeOptions: [5, 10, 25, 50, 100]
-  },
-  dateFormat: 'MMM dd, yyyy',
-  timeFormat: 'HH:mm',
-  timezone: 'UTC',
-  notifications: {
-    position: 'top-right',
-    duration: 3000,
-    showProgressBar: true
-  },
-  logging: {
-    level: 'debug',
-    enableConsoleLogging: true,
-    enableErrorReporting: false
+  table: {
+    defaultItemsPerPage: 5,
+    itemsPerPageOptions: [5, 10, 25, 50]
   },
   security: {
     enableCSRF: true,
@@ -107,19 +106,5 @@ export const environment = {
       requireNumbers: true,
       requireSpecialChars: true
     }
-  },
-  features: {
-    enableOAuth: true,
-    enablePasswordReset: true,
-    enableEmailVerification: true,
-    enableTwoFactorAuth: false,
-    enableRememberMe: true,
-    enableDarkMode: true,
-    enableLanguageSelection: true,
-    enableNotifications: true
-  },
-  table: {
-    defaultItemsPerPage: 5,
-    itemsPerPageOptions: [5, 10, 25, 50]
   }
 }; 

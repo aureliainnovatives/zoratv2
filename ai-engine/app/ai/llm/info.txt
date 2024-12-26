@@ -1,0 +1,39 @@
+LLM (Language Model) Directory
+
+Purpose:
+Handles all language model interactions, provider implementations, and model management.
+
+Components:
+1. base.py - Abstract base classes and interfaces for LLM implementations
+2. factory.py - Factory pattern implementation for LLM provider selection
+3. providers/ - Provider-specific implementations
+4. cache.py - Caching mechanisms for LLM configurations and responses
+
+Supported Providers:
+- OpenAI (GPT-3.5, GPT-4)
+- Anthropic (Claude)
+- Mistral
+- Google (Gemini)
+- Qwen
+- Local Models (via HuggingFace)
+
+Implementation Guidelines:
+1. All providers must implement BaseLLM interface
+2. Use dependency injection for configuration
+3. Implement proper error handling and retries
+4. Cache API keys and configurations in memory
+5. Use async operations for API calls
+6. Implement rate limiting and token tracking
+7. Support streaming responses where applicable
+
+Configuration Management:
+- Load configurations at startup
+- Cache API keys securely
+- Support hot-reloading of configurations
+- Implement fallback mechanisms
+
+Error Handling:
+- Provider-specific error mapping
+- Retry mechanisms for transient failures
+- Rate limit handling
+- Token limit management 

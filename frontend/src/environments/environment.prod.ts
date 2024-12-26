@@ -1,6 +1,17 @@
 export const environment = {
   production: true,
   apiUrl: 'https://api.zorat.ai/api',
+  socketUrl: 'https://api.zorat.ai',
+  aiApiUrl: 'https://ai.zorat.ai/api/v1',
+  chat: {
+    useStreaming: true,
+    streamingEndpoint: '/agent/chat/stream',
+    plainEndpoint: '/agent/chat',
+    defaultLLM: 'GPT-3.5 Turbo',
+    reconnectAttempts: 3,
+    reconnectInterval: 2000,
+    typingIndicatorDelay: 300
+  },
   auth: {
     tokenKey: 'auth_token',
     refreshTokenKey: 'refresh_token',
@@ -29,32 +40,47 @@ export const environment = {
     }
   },
   theme: {
-    default: 'light',
+    default: 'dark',
     storageKey: 'theme_preference',
     options: {
       light: {
-        primary: '#10B981',
-        'primary-hover': '#059669',
-        background: '#F9FAFB',
-        text: '#111827',
-        'text-secondary': '#4B5563',
-        border: '#E5E7EB',
-        panel: '#FFFFFF',
-        error: '#EF4444',
-        success: '#10B981',
-        warning: '#F59E0B'
+        primary: '#10a37f',
+        'primary-hover': '#0e906f',
+        background: '#ffffff',
+        text: '#666666',
+        'text-secondary': '#666666',
+        border: '#e5e7eb',
+        panel: '#ffffff',
+        error: '#ef4444',
+        success: '#10b981',
+        warning: '#f59e0b',
+        'menu-active': '#3dd6b3',
+        'menu-hover': '#34d399',
+        'menu-text': '#666666',
+        'menu-text-active': '#10b981',
+        'menu-text-hover': '#34d399',
+        'menu-bg-active': 'rgba(16, 185, 129, 0.1)',
+        'menu-bg-hover': 'rgba(52, 211, 153, 0.05)'
       },
       dark: {
-        primary: '#10B981',
-        'primary-hover': '#059669',
-        background: '#111827',
-        text: '#F9FAFB',
-        'text-secondary': '#9CA3AF',
-        border: '#374151',
-        panel: '#1F2937',
-        error: '#EF4444',
-        success: '#10B981',
-        warning: '#F59E0B'
+        primary: '#10a37f',
+        'primary-hover': '#0e906f',
+        background: '#202123',
+        text: '#c5c5d2',
+        'text-secondary': '#a0a0a0',
+        border: '#4a4b4d',
+        panel: '#2d2d2d',
+        error: '#ef4444',
+        success: '#10b981',
+        warning: '#f59e0b',
+        'menu-active': '#3dd6b3',
+        'menu-hover': '#34d399',
+        'menu-text': '#f1f1f1',
+        'menu-text-active': '#10b981',
+        'menu-text-hover': '#34d399',
+        'menu-bg-active': 'rgba(16, 185, 129, 0.1)',
+        'menu-bg-hover': 'rgba(52, 211, 153, 0.05)',
+        heading: '#ffffff'
       }
     }
   },
@@ -64,22 +90,9 @@ export const environment = {
     supportedLanguages: ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'zh', 'ja', 'ko'],
     fallbackLanguage: 'en'
   },
-  pagination: {
-    defaultPageSize: 10,
-    pageSizeOptions: [5, 10, 25, 50, 100]
-  },
-  dateFormat: 'MMM dd, yyyy',
-  timeFormat: 'HH:mm',
-  timezone: 'UTC',
-  notifications: {
-    position: 'top-right',
-    duration: 3000,
-    showProgressBar: true
-  },
-  logging: {
-    level: 'error',
-    enableConsoleLogging: false,
-    enableErrorReporting: true
+  table: {
+    defaultItemsPerPage: 5,
+    itemsPerPageOptions: [5, 10, 25, 50]
   },
   security: {
     enableCSRF: true,
@@ -92,15 +105,5 @@ export const environment = {
       requireNumbers: true,
       requireSpecialChars: true
     }
-  },
-  features: {
-    enableOAuth: true,
-    enablePasswordReset: true,
-    enableEmailVerification: true,
-    enableTwoFactorAuth: true,
-    enableRememberMe: true,
-    enableDarkMode: true,
-    enableLanguageSelection: true,
-    enableNotifications: true
   }
 }; 

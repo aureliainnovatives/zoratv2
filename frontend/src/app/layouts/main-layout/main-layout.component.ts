@@ -30,6 +30,11 @@ export class MainLayoutComponent {
       route: '/dashboard'
     },
     {
+      icon: 'science',
+      label: 'Playground',
+      route: '/playground'
+    },
+    {
       icon: 'admin_panel_settings',
       label: 'Admin',
       expanded: false,

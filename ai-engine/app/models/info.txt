@@ -1,0 +1,42 @@
+Models Directory
+
+Purpose:
+Contains all database models and schemas for the application.
+
+Components:
+1. MongoDB Models:
+   - LLM configurations
+   - Chat histories
+   - User sessions
+   - Tool configurations
+   - Vector store metadata
+
+2. Pydantic Models:
+   - Request/Response schemas
+   - Configuration schemas
+   - Validation models
+   - Data transfer objects (DTOs)
+
+Implementation Guidelines:
+1. Use Pydantic for data validation
+2. Implement proper type hints
+3. Use enums for fixed choices
+4. Include field descriptions and examples
+5. Implement proper serialization methods
+6. Use inheritance where appropriate
+7. Include validation rules and custom validators
+
+Best Practices:
+- Keep models focused and single-responsibility
+- Use composition over inheritance
+- Include proper documentation
+- Implement proper data sanitization
+- Use proper field types and constraints
+- Include example data
+- Implement proper versioning
+
+Schema Evolution:
+- Handle backward compatibility
+- Include migration strategies
+- Version critical models
+- Document breaking changes 
