@@ -1,4 +1,124 @@
-node_modules
-venv
+# General OS and Editor Files
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.log
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+bower_components/
+
+# Build directories
+dist/
+build/
+target/
+public/
+coverage/
+out/
+tmp/
+*.pyc
+*.pyo
+__pycache__/
+
+# Environment files
 .env
-dump.rdb
+.env.local
+.env.development
+.env.production
+.env.test
+.env.*
+.vscode/
+
+# Python Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Pytest Cache
+.pytest_cache/
+.cache/
+
+# Angular-specific
+.angular/
+.angular-cache/
+.angular-cli.json
+.sourcemaps/
+
+# TypeScript
+*.tsbuildinfo
+
+# Compiled files
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.out
+
+# IDE Files
+*.iml
+*.ipr
+*.iws
+*.sublime-workspace
+*.sublime-project
+
+# macOS Files
+*.DS_Store
+
+# Package manager lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Local database
+*.sqlite3
+db.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Logs and debugging
+debug.log
+npm-debug.log
+yarn-debug.log
+
+# Static files generated during builds
+staticfiles/
+media/
+static/
+build/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Coverage reports
+.coverage
+.coverage.*
+.nyc_output
+*.lcov
+
+# Lint/Formatter
+.eslintcache
+.prettiercache
+
+# Miscellaneous
+*.orig
+!*.gitkeep
