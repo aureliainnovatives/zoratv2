@@ -12,11 +12,13 @@ const Permission = require("../models/Permission");
 const Module = require("../models/Module");
 const User = require("../models/User");
 const LLM = require("../models/AIModel"); // Include the LLM model
+const Capability = require("../models/Capability");
+const Agent = require("../models/Agent");
 
 const seedData = async () => {
   try {
     // Connect to MongoDB
-    await mongoose.connect(config.mongoURI, {
+    await mongoose.connect(config.mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -27,6 +29,9 @@ const seedData = async () => {
     await Permission.deleteMany({});
     await Module.deleteMany({});
     await User.deleteMany({});
+    await LLM.deleteMany({});
+    await Capability.deleteMany({});
+    await Agent.deleteMany({});
     console.log("Cleared existing collections");
 
     // Seed Permissions
@@ -225,6 +230,75 @@ const seedData = async () => {
       await LLM.insertMany(llmModels);
       console.log("LLM models seeded");
 
+
+
+    // Seed Capabilities
+      const capabilities = [
+        {
+          name: "Weather",
+          description: "Fetch current weather details for a location",
+          file: "weather.js",
+          functionName: "getWeather",
+          category: "utility",
+          parameters: { location: "string" },
+        },
+        {
+          name: "Google Search",
+          description: "Perform a Google search query",
+          file: "google_search.js",
+          functionName: "searchGoogle",
+          category: "search",
+          parameters: { query: "string", resultsCount: "number" },
+        },
+        {
+          name: "Calculator",
+          description: "Perform mathematical expressions",
+          file: "calculator.js",
+          functionName: "evaluateExpression",
+          category: "utility",
+          parameters: { expression: "string" },
+        },
+        {
+          name: "Google Search for LinkedIn",
+          description: "Perform a LinkedIn-specific Google search",
+          file: "linkedin_search.js",
+          functionName: "searchLinkedIn",
+          category: "search",
+          parameters: { query: "string", site: "linkedIn" },
+        },
+        {
+          name: "Document Search",
+          description: "Search for relevant information in a document repository",
+          file: "document_search.js",
+          functionName: "searchDocuments",
+          category: "search",
+          parameters: { query: "string", documentId: "string" },
+        },
+      ];
+      const createdCapabilities = await Capability.insertMany(capabilities);
+      console.log("Capabilities seeded");
+      
+
+       // Seed Agent with all capabilities
+      const allCapabilities = await Capability.find();
+      const gpt4 = await LLM.findOne({ name: "GPT-4" });
+
+
+      const agent = {
+        name: "Universal Assistant",
+        description: "An agent with all available capabilities",
+        capabilities: allCapabilities.map((capability) => capability._id),
+        llm: gpt4._id,
+        userId: "676e60dcd8e6f941e518f863", // Replace with a valid user ID from your database
+        inputFormat: "text",
+        outputFormat: "JSON",
+        createdBy: "System Admin",
+        visibility: "shared",
+      };
+  
+      await Agent.create(agent);
+      console.log("Universal Assistant agent seeded");
+  
     // Exit process
     process.exit();
   } catch (error) {
