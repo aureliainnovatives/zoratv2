@@ -1,25 +1,28 @@
-from typing import Dict, Type
-from .base import BaseLLM
+import logging
+from typing import Dict, Any
+from langchain_community.chat_models import ChatOpenAI
 from .providers.openai import OpenAIProvider
-from .providers.gemini import GeminiProvider
-from ...models.llm import LLMConfig
+from ..core.llm_config import LLMConfig
+
+logger = logging.getLogger(__name__)
 
 class LLMFactory:
-    """Factory for creating LLM provider instances"""
+    """Factory for creating LLM instances"""
     
-    # Map of provider names to their implementations
-    _providers: Dict[str, Type[BaseLLM]] = {
-        "OPENAI": OpenAIProvider,
-        "GOOGLE": GeminiProvider
-    }
-    
-    @classmethod
-    async def create(cls, config: LLMConfig) -> BaseLLM:
-        """Create an LLM provider instance based on configuration"""
-        provider_class = cls._providers.get(config.provider)
-        if not provider_class:
-            raise ValueError(f"Unsupported LLM provider: {config.provider}")
+    @staticmethod
+    async def create(config: Dict[str, Any]) -> ChatOpenAI:
+        """Create an LLM instance based on configuration"""
+        try:
+            # First validate the config
+            llm_config = LLMConfig(**config)
             
-        provider = provider_class()
-        await provider.initialize(config)
-        return provider 
+            # Check the type
+            if llm_config.type.lower() == "openai":
+                provider = OpenAIProvider(llm_config)
+                return provider.llm
+            else:
+                raise ValueError(f"Unsupported LLM type: {llm_config.type}")
+                
+        except Exception as e:
+            logger.error(f"Error creating LLM: {str(e)}")
+            raise 

@@ -1,80 +1,51 @@
-from typing import List, Dict, Any, AsyncGenerator
 import logging
-from openai import OpenAI, AsyncOpenAI
-from ..base import BaseLLM
-from ....models.llm import LLMConfig
+from typing import Dict, Any, Optional, List
+from langchain_community.chat_models import ChatOpenAI
+from langchain.schema import BaseMessage
+from ...core.llm_config import LLMConfig
 
 logger = logging.getLogger(__name__)
 
-class OpenAIProvider(BaseLLM):
-    """OpenAI provider implementation"""
+class OpenAIProvider:
+    """OpenAI LLM provider implementation"""
     
-    def __init__(self):
-        self.client = None
-        self.config = None
-    
-    async def initialize(self, config: LLMConfig) -> None:
-        """Initialize OpenAI client with configuration"""
+    def __init__(self, config: LLMConfig):
+        """Initialize OpenAI provider with configuration"""
         try:
-            logger.info(f"Initializing OpenAI client for model {config.model_name}")
-            self.config = config
+            # Initialize ChatOpenAI with validated config
+            kwargs = {
+                "model_name": config.model_name,
+                "openai_api_key": config.api_key,
+                "temperature": config.temperature,
+                "max_tokens": config.max_tokens,
+            }
             
-            # Initialize the OpenAI client
-            self.client = OpenAI(
-                api_key=config.api_key,
-                base_url=config.base_url
-            )
+            # Add optional base_url if provided
+            if config.base_url:
+                kwargs["base_url"] = config.base_url
             
-            logger.info("OpenAI client initialized successfully")
+            self._llm = ChatOpenAI(**kwargs)
+            logger.info(f"Initialized OpenAI provider with model: {config.model_name}")
             
         except Exception as e:
-            logger.error(f"Failed to initialize OpenAI client: {str(e)}")
-            raise RuntimeError(f"Failed to initialize OpenAI client: {str(e)}")
+            logger.error(f"Error initializing OpenAI provider: {str(e)}")
+            raise
     
-    async def chat(self, messages: List[Dict[str, str]]) -> str:
-        """Generate chat completion using OpenAI"""
-        if not self.client:
-            raise RuntimeError("OpenAI client not initialized")
-        
+    @property
+    def llm(self) -> ChatOpenAI:
+        """Get the underlying LangChain LLM instance"""
+        return self._llm
+    
+    async def generate(self, messages: List[BaseMessage]) -> str:
+        """Generate response for messages"""
         try:
-            logger.debug(f"Sending chat request to OpenAI with {len(messages)} messages")
-            response = self.client.chat.completions.create(
-                model=self.config.model_name,
-                messages=messages,
-                max_tokens=self.config.max_tokens,
-                temperature=self.config.temperature
-            )
-            
-            logger.debug("Successfully received response from OpenAI")
-            return response.choices[0].message.content
+            response = await self._llm.agenerate([messages])
+            return response.generations[0][0].text
             
         except Exception as e:
-            logger.error(f"OpenAI API error during chat: {str(e)}")
-            raise RuntimeError(f"OpenAI API error: {str(e)}")
+            logger.error(f"Error generating response: {str(e)}")
+            raise
     
-    async def generate(self, prompt: str) -> str:
-        """Generate text completion using OpenAI"""
-        return await self.chat([{"role": "user", "content": prompt}])
-    
-    async def stream_chat(self, messages: List[Dict[str, str]]) -> AsyncGenerator[str, None]:
-        """Stream chat completion using OpenAI"""
-        if not self.client:
-            raise RuntimeError("OpenAI client not initialized")
-        
-        try:
-            logger.debug(f"Starting streaming chat with {len(messages)} messages")
-            stream = self.client.chat.completions.create(
-                model=self.config.model_name,
-                messages=messages,
-                max_tokens=self.config.max_tokens,
-                temperature=self.config.temperature,
-                stream=True
-            )
-            
-            for chunk in stream:
-                if chunk.choices[0].delta.content is not None:
-                    yield chunk.choices[0].delta.content
-            
-        except Exception as e:
-            logger.error(f"OpenAI API error during stream chat: {str(e)}")
-            raise RuntimeError(f"OpenAI API error during streaming: {str(e)}") 
+    def __getattr__(self, name: str) -> Any:
+        """Delegate unknown attributes to the underlying LLM"""
+        return getattr(self._llm, name) 

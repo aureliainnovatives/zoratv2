@@ -1,6 +1,5 @@
-from typing import List, Dict, Any, AsyncGenerator
 import logging
-import asyncio
+from typing import List, Dict, AsyncGenerator
 import google.generativeai as genai
 from ..base import BaseLLM
 from ....models.llm import LLMConfig
@@ -8,111 +7,64 @@ from ....models.llm import LLMConfig
 logger = logging.getLogger(__name__)
 
 class GeminiProvider(BaseLLM):
-    """Google Gemini provider implementation"""
+    """Google Gemini API provider implementation"""
     
     def __init__(self):
         self.model = None
-        self.config = None
+        self.max_tokens = None
+        self.temperature = None
     
     async def initialize(self, config: LLMConfig) -> None:
         """Initialize Gemini client with configuration"""
         try:
-            logger.info(f"Initializing Gemini client for model {config.model_name}")
-            self.config = config
-            
-            # Configure the Gemini API
-            genai.configure(
-                api_key=config.api_key,
-                transport="rest"  # Use REST API
+            genai.configure(api_key=config.api_key)
+            self.model = genai.GenerativeModel(
+                model_name=config.model_name,
+                generation_config={
+                    "max_output_tokens": config.max_tokens,
+                    "temperature": config.temperature
+                }
             )
-            
-            # Get the specified model
-            self.model = genai.GenerativeModel(config.model_name)
-            
-            logger.info("Gemini client initialized successfully")
-            
+            self.max_tokens = config.max_tokens
+            self.temperature = config.temperature
+            logger.info(f"Initialized Gemini provider with model: {config.model_name}")
         except Exception as e:
-            logger.error(f"Failed to initialize Gemini client: {str(e)}")
-            raise RuntimeError(f"Failed to initialize Gemini client: {str(e)}")
+            logger.error(f"Failed to initialize Gemini provider: {str(e)}")
+            raise
     
     async def chat(self, messages: List[Dict[str, str]]) -> str:
-        """Generate chat completion using Gemini"""
-        if not self.model:
-            raise RuntimeError("Gemini client not initialized")
-        
+        """Send a chat request to Gemini API"""
         try:
-            logger.debug(f"Sending chat request to Gemini with {len(messages)} messages")
-            
             # Convert messages to Gemini format
-            gemini_messages = []
-            for msg in messages:
-                if msg["role"] == "user":
-                    gemini_messages.append({
-                        "parts": [{"text": msg["content"]}]
-                    })
-            
-            # Run in thread pool to avoid blocking
-            loop = asyncio.get_event_loop()
-            response = await loop.run_in_executor(
-                None,
-                lambda: self.model.generate_content(
-                    gemini_messages,
-                    generation_config=genai.types.GenerationConfig(
-                        max_output_tokens=self.config.max_tokens,
-                        temperature=self.config.temperature
-                    )
-                )
-            )
-            
-            if not response or not response.text:
-                raise RuntimeError("No response generated")
-                
-            logger.debug("Successfully received response from Gemini")
+            chat = self.model.start_chat()
+            for message in messages:
+                if message["role"] == "user":
+                    response = chat.send_message(message["content"])
             return response.text
-            
         except Exception as e:
-            logger.error(f"Gemini API error during chat: {str(e)}")
-            raise RuntimeError(f"Gemini API error: {str(e)}")
-    
-    async def generate(self, prompt: str) -> str:
-        """Generate text completion using Gemini"""
-        return await self.chat([{"role": "user", "content": prompt}])
+            logger.error(f"Gemini chat error: {str(e)}")
+            raise
     
     async def stream_chat(self, messages: List[Dict[str, str]]) -> AsyncGenerator[str, None]:
-        """Stream chat completion using Gemini"""
-        if not self.model:
-            raise RuntimeError("Gemini client not initialized")
-        
+        """Stream chat response from Gemini API"""
         try:
-            logger.debug(f"Starting streaming chat with {len(messages)} messages")
-            
             # Convert messages to Gemini format
-            gemini_messages = []
-            for msg in messages:
-                if msg["role"] == "user":
-                    gemini_messages.append({
-                        "parts": [{"text": msg["content"]}]
-                    })
+            chat = self.model.start_chat()
+            for message in messages[:-1]:  # Process all messages except the last one
+                if message["role"] == "user":
+                    chat.send_message(message["content"])
             
-            # Run in thread pool to avoid blocking
-            loop = asyncio.get_event_loop()
-            stream = await loop.run_in_executor(
-                None,
-                lambda: self.model.generate_content(
-                    gemini_messages,
-                    generation_config=genai.types.GenerationConfig(
-                        max_output_tokens=self.config.max_tokens,
-                        temperature=self.config.temperature
-                    ),
+            # Stream the response for the last message
+            last_message = messages[-1]
+            if last_message["role"] == "user":
+                response = chat.send_message(
+                    last_message["content"],
                     stream=True
                 )
-            )
-            
-            # Process the stream in chunks
-            for chunk in stream:
-                if chunk.text:
-                    yield chunk.text
-            
+                async for chunk in response:
+                    if chunk.text:
+                        yield chunk.text
+                    
         except Exception as e:
-            logger.error(f"Gemini API error during stream chat: {str(e)}")
-            raise RuntimeError(f"Gemini API error during streaming: {str(e)}") 
+            logger.error(f"Gemini stream chat error: {str(e)}")
+            raise 

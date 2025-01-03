@@ -272,6 +272,7 @@ export class ChatService {
       llm_name: environment.chat.defaultLLM,
       useStreaming: false, // Always use normal chat
       endpoint: environment.chat.plainEndpoint,
+      agent_id: "676e61f9cd09ad6d6b53d0b6", // Hardcoded Universal Assistant agent ID
       metadata: {
         timestamp: new Date().toISOString(),
         client: 'web',
@@ -281,6 +282,7 @@ export class ChatService {
 
     console.log('[Socket] Sending message using normal chat');
     console.log('[Socket] Using endpoint:', messageData.endpoint);
+    console.log('[Socket] Using agent:', messageData.agent_id);
     this.socket.emit('message', messageData);
   }
 } 

@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 from ..controllers.agent_controller import AgentController
 from ..schemas.agent_schema import ChatRequest, ChatResponse
@@ -28,31 +28,40 @@ async def home():
     return await agent_controller.get_home()
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat(chat_request: ChatRequest):
+async def chat(
+    chat_request: ChatRequest,
+    session_id: str = Query(default="default_session", description="Session ID for the chat")
+):
     """
-    Chat with the AI agent.
+    Chat with an AI agent.
     
     Parameters:
-    - user: The user's message
+    - chat_request: The chat request containing the user's message, agent_id and optional llm_name
+    - session_id: Session ID for the chat (defaults to 'default_session' if not provided)
     
     Returns:
     - user: The original user message
     - assistant: The AI assistant's response
+    - llm_used: The LLM used for the response
     """
-    return await agent_controller.chat(chat_request)
+    return await agent_controller.chat(chat_request.agent_id, session_id, chat_request)
 
 @router.post("/chat/stream")
-async def chat_stream(chat_request: ChatRequest):
+async def chat_stream(
+    chat_request: ChatRequest,
+    session_id: str = Query(default="default_session", description="Session ID for the chat")
+):
     """
-    Stream chat responses from the AI agent.
+    Stream chat responses from an AI agent.
     
     Parameters:
-    - user: The user's message
+    - chat_request: The chat request containing the user's message, agent_id and optional llm_name
+    - session_id: Session ID for the chat (defaults to 'default_session' if not provided)
     
     Returns:
     - StreamingResponse: A stream of AI assistant's responses
     """
     return StreamingResponse(
-        agent_controller.stream_chat(chat_request),
+        agent_controller.stream_chat(chat_request.agent_id, session_id, chat_request),
         media_type="text/event-stream"
     ) 

@@ -24,7 +24,7 @@ class AIService {
     }
 
     // Regular chat method for non-streaming responses
-    async chat(message, llm_name = 'GPT-3.5 Turbo', endpoint = '/agent/chat') {
+    async chat(message, llm_name = 'GPT-3.5 Turbo', endpoint = '/agent/chat', agent_id = null) {
         let retries = 0;
         
         while (retries < this.maxRetries) {
@@ -32,15 +32,24 @@ class AIService {
                 console.log(`Attempting to call AI service (attempt ${retries + 1}/${this.maxRetries})`);
                 const url = `${this.baseUrl}${endpoint}`;
                 console.log('Request URL:', url);
-                console.log('Request Body:', { user: message, llm_name });
+                
+                // Prepare request data
+                const requestData = { 
+                    user: message,
+                    llm_name
+                };
+                
+                // Add agent_id only if provided
+                if (agent_id) {
+                    requestData.agent_id = agent_id;
+                }
+                
+                console.log('Request Body:', requestData);
                 
                 const response = await this.axiosInstance({
                     method: 'post',
                     url: url,
-                    data: { 
-                        user: message,
-                        llm_name
-                    }
+                    data: requestData
                 });
 
                 console.log('AI service response:', response.data);

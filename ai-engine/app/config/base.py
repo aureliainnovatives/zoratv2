@@ -25,5 +25,8 @@ class BaseSettings(BaseSettings):
     # OpenAI Settings
     OPENAI_API_KEY: str = ""
     
+    # OpenWeather Settings
+    OPENWEATHER_API_KEY: str = ""
+    
     class Config:
         case_sensitive = True 

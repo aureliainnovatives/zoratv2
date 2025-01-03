@@ -237,7 +237,7 @@ const seedData = async () => {
         {
           name: "Weather",
           description: "Fetch current weather details for a location",
-          file: "weather.js",
+          file: "weather.py",
           functionName: "getWeather",
           category: "utility",
           parameters: { location: "string" },
@@ -245,7 +245,7 @@ const seedData = async () => {
         {
           name: "Google Search",
           description: "Perform a Google search query",
-          file: "google_search.js",
+          file: "google_search.py",
           functionName: "searchGoogle",
           category: "search",
           parameters: { query: "string", resultsCount: "number" },
@@ -253,7 +253,7 @@ const seedData = async () => {
         {
           name: "Calculator",
           description: "Perform mathematical expressions",
-          file: "calculator.js",
+          file: "calculator.py",
           functionName: "evaluateExpression",
           category: "utility",
           parameters: { expression: "string" },
@@ -261,7 +261,7 @@ const seedData = async () => {
         {
           name: "Google Search for LinkedIn",
           description: "Perform a LinkedIn-specific Google search",
-          file: "linkedin_search.js",
+          file: "linkedin_search.py",
           functionName: "searchLinkedIn",
           category: "search",
           parameters: { query: "string", site: "linkedIn" },
@@ -269,7 +269,7 @@ const seedData = async () => {
         {
           name: "Document Search",
           description: "Search for relevant information in a document repository",
-          file: "document_search.js",
+          file: "document_search.py",
           functionName: "searchDocuments",
           category: "search",
           parameters: { query: "string", documentId: "string" },

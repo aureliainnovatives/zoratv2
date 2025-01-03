@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any
+from typing import List, Dict, AsyncGenerator
 from ...models.llm import LLMConfig
 
 class BaseLLM(ABC):
-    """Base class for LLM implementations"""
+    """Base class for LLM providers"""
     
     @abstractmethod
     async def initialize(self, config: LLMConfig) -> None:
@@ -12,15 +12,10 @@ class BaseLLM(ABC):
     
     @abstractmethod
     async def chat(self, messages: List[Dict[str, str]]) -> str:
-        """Generate chat response"""
+        """Send a chat request and get a response"""
         pass
     
     @abstractmethod
-    async def generate(self, prompt: str) -> str:
-        """Generate text from prompt"""
-        pass
-    
-    @abstractmethod
-    async def stream_chat(self, messages: List[Dict[str, str]]) -> Any:
-        """Stream chat response"""
+    async def stream_chat(self, messages: List[Dict[str, str]]) -> AsyncGenerator[str, None]:
+        """Stream a chat response"""
         pass 

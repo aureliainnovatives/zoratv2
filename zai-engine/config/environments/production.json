@@ -1,0 +1,76 @@
+{
+  "general": {
+    "debug": false,
+    "api": {
+      "version": "v1",
+      "prefix": "/api/v1",
+      "cors": {
+        "origins": ["https://api.zorat.ai"],
+        "methods": ["GET", "POST", "PUT", "DELETE"]
+      }
+    },
+    "project_name": "ZAI Engine",
+    "version": "1.0.0"
+  },
+  "mongodb": {
+    "connection": {
+      "url": "mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0",
+      "db_name": "zoratv2_prod",
+      "max_connections": 100,
+      "min_connections": 10
+    },
+    "options": {
+      "timeout_ms": 3000,
+      "retry_writes": true
+    }
+  },
+  "elasticsearch": {
+    "connection": {
+      "url": "https://elasticsearch-prod:9200",
+      "user": "elastic",
+      "password": "prod-password"
+    },
+    "index": {
+      "prefix": "zoratv2_prod",
+      "shards": 5,
+      "replicas": 2,
+      "refresh_interval": "30s"
+    }
+  },
+  "openai": {
+    "api_key": "your-prod-api-key",
+    "model": "text-embedding-ada-002",
+    "max_tokens": 8000,
+    "temperature": 0.5,
+    "request_timeout": 30
+  },
+  "docling": {
+    "processing": {
+      "enabled": true,
+      "use_ocr": true,
+      "extract_tables": true,
+      "extract_images": true,
+      "max_pages": 1000
+    },
+    "chunking": {
+      "size": 1000,
+      "overlap": 200
+    },
+    "performance": {
+      "timeout_seconds": 600,
+      "parallel_processing": true,
+      "max_retries": 5
+    }
+  },
+  "storage": {
+    "base_path": "/mnt/data/storage",
+    "directories": {
+      "upload": "uploads",
+      "processed": "processed"
+    },
+    "limits": {
+      "max_file_size": 52428800,
+      "allowed_extensions": ["pdf", "docx", "txt", "md"]
+    }
+  }
+} 

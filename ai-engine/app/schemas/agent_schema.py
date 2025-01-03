@@ -4,12 +4,14 @@ class ChatRequest(BaseModel):
     """Schema for chat request"""
     user: str = Field(..., description="The user's message")
     llm_name: str = Field(default="GPT-3.5 Turbo", description="Name of the LLM to use")
+    agent_id: str = Field(..., description="ID of the agent to use")
     
     class Config:
         json_schema_extra = {
             "example": {
                 "user": "What is the weather today?",
-                "llm_name": "GPT-3.5 Turbo"
+                "llm_name": "GPT-3.5 Turbo",
+                "agent_id": "676e61f9cd09ad6d6b53d0b6"
             }
         }
 

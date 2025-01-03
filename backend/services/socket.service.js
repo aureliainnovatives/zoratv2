@@ -120,7 +120,8 @@ class SocketService {
                     await this.handleMessage(socket, {
                         content: data.content,
                         llm_name: data.llm_name || 'GPT-3.5 Turbo',
-                        useStreaming: data.useStreaming !== false // default to true if not specified
+                        useStreaming: data.useStreaming !== false, // default to true if not specified
+                        agent_id: data.agent_id // Pass through agent_id if provided
                     });
                 } catch (error) {
                     console.error('Error handling message:', error);
@@ -250,7 +251,12 @@ class SocketService {
             } else {
                 console.log('Using non-streaming mode with endpoint:', endpoint);
                 // Handle non-streaming mode
-                const response = await aiService.chat(message.content, message.llm_name, endpoint);
+                const response = await aiService.chat(
+                    message.content, 
+                    message.llm_name, 
+                    endpoint,
+                    message.agent_id // Pass agent_id to AI service
+                );
                 console.log('Received non-streaming response:', response);
                 socket.emit('chat-response', {
                     type: 'message',

@@ -1,0 +1,10 @@
+This is a sample text file for testing the ZAI Engine document processing.
+
+It contains multiple paragraphs to test the chunking functionality.
+
+This paragraph tests the basic text processing capabilities.
+
+References:
+1. Sample reference one
+2. Sample reference two
+3. Sample reference three 

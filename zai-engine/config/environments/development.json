@@ -1,0 +1,76 @@
+{
+  "general": {
+    "debug": true,
+    "api": {
+      "version": "v1",
+      "prefix": "/api/v1",
+      "cors": {
+        "origins": ["*"],
+        "methods": ["*"]
+      }
+    },
+    "project_name": "ZAI Engine",
+    "version": "1.0.0"
+  },
+  "mongodb": {
+    "connection": {
+      "url": "mongodb://localhost:27017",
+      "db_name": "zoratv2",
+      "max_connections": 10,
+      "min_connections": 1
+    },
+    "options": {
+      "timeout_ms": 5000,
+      "retry_writes": true
+    }
+  },
+  "elasticsearch": {
+    "connection": {
+      "url": "http://localhost:9200",
+      "user": "elastic",
+      "password": "changeme"
+    },
+    "index": {
+      "prefix": "zoratv2",
+      "shards": 1,
+      "replicas": 1,
+      "refresh_interval": "1s"
+    }
+  },
+  "openai": {
+    "api_key": "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",
+    "model": "text-embedding-ada-002",
+    "max_tokens": 8000,
+    "temperature": 0.7,
+    "request_timeout": 60
+  },
+  "docling": {
+    "processing": {
+      "enabled": true,
+      "use_ocr": false,
+      "extract_tables": true,
+      "extract_images": false,
+      "max_pages": null
+    },
+    "chunking": {
+      "size": 1000,
+      "overlap": 200
+    },
+    "performance": {
+      "timeout_seconds": 300,
+      "parallel_processing": true,
+      "max_retries": 3
+    }
+  },
+  "storage": {
+    "base_path": "storage",
+    "directories": {
+      "upload": "uploads",
+      "processed": "processed"
+    },
+    "limits": {
+      "max_file_size": 10485760,
+      "allowed_extensions": ["pdf", "docx", "txt", "md"]
+    }
+  }
+} 
