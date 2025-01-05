@@ -44,10 +44,10 @@ POST {{baseUrl}}{{apiVersion}}/documents/upload
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="test.pdf"
+Content-Disposition: form-data; name="file"; filename="ai-1.pdf"
 Content-Type: application/pdf
 
-< ./test_files/test.pdf
+< ./test_files/ai-1.pdf
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ### Upload DOCX
@@ -71,3 +71,42 @@ GET {{baseUrl}}{{apiVersion}}/documents/search?query=what is pdf format&limit=5
 
 ### Semantic Search
 GET {{baseUrl}}{{apiVersion}}/documents/search?query=who is SME and what is the name of SME&limit=5 
+
+### RAG Search with OpenAI
+# @name ragSearchOpenAI
+POST {{baseUrl}}{{apiVersion}}/search/rag
+Content-Type: application/json
+
+{
+    "query": "which year The Dartmouth Conference happened? and what was invented in that conference?",
+    "llm_id": "676bc9c2dc75f23d7a35337d",
+    "top_k": 5,
+    "max_tokens": 500,
+    "temperature": 0.7
+}
+
+### RAG Search with Gemini
+# @name ragSearchGemini
+POST {{baseUrl}}{{apiVersion}}/search/rag
+Content-Type: application/json
+
+{
+    "query": "Summarize the key points from the document",
+    "llm_id": "676bc9c2dc75f23d7a35337d",
+    "top_k": 3,
+    "max_tokens": 1000,
+    "temperature": 0.5
+}
+
+### RAG Search with Custom Parameters
+# @name ragSearchCustom
+POST {{baseUrl}}{{apiVersion}}/search/rag
+Content-Type: application/json
+
+{
+    "query": "Find specific technical details about the implementation",
+    "llm_id": "676bc9c2dc75f23d7a35337f",
+    "top_k": 10,
+    "max_tokens": 2000,
+    "temperature": 0.3
+} 

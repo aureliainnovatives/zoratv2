@@ -2,15 +2,16 @@ from typing import List, Optional
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from fastapi import UploadFile, HTTPException
 from bson import ObjectId
-from elasticsearch import AsyncElasticsearch
+from elasticsearch import AsyncElasticsearch, Elasticsearch
 import shutil
 import os
 import logging
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
+from openai import OpenAI
 
-from app.models.document import Document, DocumentChunk
-from app.utils.file_utils import save_upload_file, get_storage_path
 from app.core.database import db
+from app.models.document import Document, DocumentChunk
+from app.utils.file_utils import get_storage_path, save_upload_file
 from config import config
 
 class DocumentService:
@@ -18,9 +19,13 @@ class DocumentService:
         """Initialize document service."""
         self.db: AsyncIOMotorDatabase = None
         self.es: AsyncElasticsearch = None
+        
+        # Initialize embeddings with the new v0.3 format
         self.embeddings = OpenAIEmbeddings(
-            openai_api_key=config["openai"]["api_key"],
-            model=config["openai"]["model"]
+            api_key=config["openai"]["api_key"],
+            model="text-embedding-ada-002",
+            dimensions=1536,
+            show_progress_bar=True
         )
 
     async def connect(self):
