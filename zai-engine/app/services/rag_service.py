@@ -2,13 +2,15 @@ from typing import Dict, List, Optional
 from haystack_integrations.document_stores.elasticsearch import ElasticsearchDocumentStore
 from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchEmbeddingRetriever
 from haystack.components.generators.openai import OpenAIGenerator
+from haystack.components.embedders import OpenAITextEmbedder
 from haystack.dataclasses import Document
 from haystack.utils import Secret
+from haystack import Pipeline
+from haystack.components.builders import PromptBuilder
 from elasticsearch import AsyncElasticsearch
 import os
 
 from app.services.llm_service import LLMService
-from app.services.embedding_service import EmbeddingService
 from app.core.database import db
 from config import config
 
@@ -18,19 +20,20 @@ class RAGService:
     def __init__(self):
         """Initialize RAG service."""
         self.llm_service = LLMService()
-        self.embedding_service = EmbeddingService()
         self.document_store = None
-        self.retriever = None
-        self.generator = None
+        self.pipeline = None
         self.current_llm_id = None
         self.prompt_template = """Answer the question based on the given context. If you cannot find 
         the answer in the context, say "I cannot answer this question based on the provided context." 
         Do not make up any information.
-        
-        Context: {documents}
-        
-        Question: {query}
-        
+
+        Context:
+        {% for document in documents %}
+            {{ document.content }}
+        {% endfor %}
+
+        Question: {{ query }}
+
         Answer: """
 
     async def initialize(self, llm_id: str):
@@ -39,9 +42,6 @@ class RAGService:
         provider = await self.llm_service.get_provider(llm_id)
         if not provider:
             raise ValueError(f"Failed to initialize LLM provider: {llm_id}")
-        
-        # Initialize embedding service
-        await self.embedding_service.initialize()
         
         # Initialize Elasticsearch document store if not already done
         if not self.document_store:
@@ -65,7 +65,7 @@ class RAGService:
                             "content": {"type": "text"},
                             "embedding": {
                                 "type": "dense_vector",
-                                "dims": self.embedding_service.embedding_dim,
+                                "dims": 1536,  # OpenAI ada-002 dimension
                                 "index": True,
                                 "similarity": "cosine"
                             },
@@ -98,14 +98,20 @@ class RAGService:
             )
             await es_client.close()
         
-        # Initialize retriever with Elasticsearch
-        self.retriever = ElasticsearchEmbeddingRetriever(
+        # Initialize Haystack Pipeline components
+        embedder = OpenAITextEmbedder(
+            api_key=Secret.from_token(config["openai"]["api_key"]),
+            model="text-embedding-ada-002"
+        )
+        
+        retriever = ElasticsearchEmbeddingRetriever(
             document_store=self.document_store,
             top_k=5
         )
         
-        # Initialize generator with the dynamic LLM
-        self.generator = OpenAIGenerator(
+        prompt_builder = PromptBuilder(template=self.prompt_template)
+        
+        generator = OpenAIGenerator(
             api_key=Secret.from_token(provider.api_key),
             model=provider.model_name,
             generation_kwargs={
@@ -113,6 +119,18 @@ class RAGService:
                 "temperature": provider.temperature
             }
         )
+        
+        # Create and configure the pipeline
+        self.pipeline = Pipeline()
+        self.pipeline.add_component("embedder", embedder)
+        self.pipeline.add_component("retriever", retriever)
+        self.pipeline.add_component("prompt_builder", prompt_builder)
+        self.pipeline.add_component("generator", generator)
+        
+        # Connect components in the pipeline
+        self.pipeline.connect("embedder.embedding", "retriever.query_embedding")
+        self.pipeline.connect("retriever.documents", "prompt_builder.documents")
+        self.pipeline.connect("prompt_builder", "generator")
         
         # Store current LLM ID
         self.current_llm_id = llm_id
@@ -127,30 +145,19 @@ class RAGService:
 
     async def query(self, query: str, **kwargs) -> Dict:
         """Execute RAG query pipeline."""
-        if not self.retriever or not self.generator:
+        if not self.pipeline:
             raise RuntimeError("Pipeline not initialized. Call initialize() first.")
         
         try:
-            # Set retriever parameters
-            self.retriever.top_k = kwargs.get("top_k", 5)
+            # Update retriever's top_k if provided
+            if "top_k" in kwargs:
+                self.pipeline.get_component("retriever").top_k = kwargs["top_k"]
             
-            # Generate query embedding using the embedding service
-            query_embedding = await self.embedding_service.get_embedding(query)
-            
-            # Run retriever with the embedding
-            retrieved_docs = self.retriever.run(
-                query_embedding=query_embedding
-            )
-            
-            # Build prompt with retrieved documents
-            prompt = self.prompt_template.format(
-                documents="\n".join([doc.content for doc in retrieved_docs["documents"]]),
-                query=query
-            )
-            
-            # Generate answer using the prompt
-            answer = self.generator.run(prompt=prompt)
-            print(f"OpenAI Generator Response: {answer}")  # Debug print
+            # Run the pipeline
+            result = self.pipeline.run({
+                "embedder": {"text": query},
+                "prompt_builder": {"query": query}
+            })
             
             # Process documents for response
             documents = [
@@ -159,11 +166,11 @@ class RAGService:
                     "score": doc.score if hasattr(doc, "score") else None,
                     "meta": doc.meta
                 }
-                for doc in retrieved_docs["documents"]
+                for doc in result["retriever"]["documents"]
             ]
             
             return {
-                "answer": answer["replies"][0],  # OpenAIGenerator returns {'replies': [...]}
+                "answer": result["generator"]["replies"][0],
                 "documents": documents,
                 "query": query,
                 "llm_id": self.current_llm_id
@@ -174,4 +181,7 @@ class RAGService:
 
     def update_prompt_template(self, template: str):
         """Update the prompt template used by the RAG pipeline."""
+        if self.pipeline:
+            prompt_builder = self.pipeline.get_component("prompt_builder")
+            prompt_builder.template = template
         self.prompt_template = template 
