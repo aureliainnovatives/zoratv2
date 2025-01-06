@@ -112,13 +112,18 @@ class DocumentService:
             upload_path = get_storage_path(config["storage"]["directories"]["upload"])
             file_path, mime_type = await save_upload_file(file, upload_path)
             
+            # Get file size
+            file_size = os.path.getsize(file_path)
+            
             # Create document record with a new ObjectId
             doc_id = ObjectId()
             document = Document(
                 id=doc_id,
                 filename=file.filename,
+                original_name=file.filename,
                 file_path=file_path,
                 mime_type=mime_type,
+                size=file_size,
                 status="pending"
             )
             
